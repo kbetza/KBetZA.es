@@ -74,3 +74,9 @@ body {
     font-size: 0.9rem;
   }
   
+  .login-logo {
+    width: 100px;
+    height: auto;
+    margin-bottom: 1.5rem;
+  }
+  
