@@ -26,6 +26,8 @@ body {
   
   .login-form .input-group {
     margin-bottom: 1.2rem;
+    margin-left: 10px;
+    margin-right: 10px;
   }
   
   .login-form input {
