@@ -6,48 +6,75 @@
   <title>Lobby - Apuestas</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    .lobby-container {
-      background: #ffffff;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-      width: 360px;
-      text-align: center;
+    body {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: #ffffffcc;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .header img {
+      height: 50px;
+      margin-right: 1rem;
+    }
+
+    .header h1 {
+      font-size: 1.8rem;
+      color: #333;
+      margin: 0;
+    }
+
+    .button-grid {
       display: flex;
       flex-direction: column;
+      width: 100%;
+      padding: 2rem;
       gap: 1rem;
+      box-sizing: border-box;
     }
 
     .lobby-button {
-      padding: 1rem;
+      padding: 1.2rem;
       background-color: #4CAF50;
       color: #fff;
       border: none;
-      border-radius: 6px;
-      font-size: 1.1rem;
+      border-radius: 8px;
+      font-size: 1.2rem;
       cursor: pointer;
       transition: background 0.3s;
+      width: 100%;
     }
 
     .lobby-button:hover {
       background-color: #45a049;
     }
 
-    .lobby-title {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      color: #333;
+    @media (min-width: 768px) {
+      .button-grid {
+        max-width: 600px;
+        margin: 0 auto;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="lobby-container">
-    <div class="lobby-title">Bienvenido al Lobby</div>
+  <header class="header">
+    <img src="imagenes/logo.png" alt="Logo de apuestas" />
+    <h1>Bienvenido al Lobby</h1>
+  </header>
+
+  <main class="button-grid">
     <button class="lobby-button">Perfil</button>
     <button class="lobby-button">Mis apuestas</button>
     <button class="lobby-button">Clasificación</button>
     <button class="lobby-button">Canjear puntos</button>
     <button class="lobby-button">Casino</button>
-  </div>
+  </main>
 </body>
 </html>
