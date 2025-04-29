@@ -8,6 +8,8 @@ body {
   justify-content: center;
   font-family: 'Poppins', sans-serif;
   flex-direction: column;
+  padding-top: 4rem; /* Ajusta esto según la altura del encabezado */
+
 }
 
 .login-wrapper {
@@ -95,11 +97,16 @@ body {
   padding: 1rem 2rem;
   background-color: #ffffffcc;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  height: 80px;
   width: 100%;
+  position: fixed;  /* Esto asegura que esté fija en la parte superior */
+  top: 0;           /* Pegada a la parte superior */
+  left: 0;          /* Pegada al borde izquierdo */
+  z-index: 10;      /* Asegura que el encabezado quede por encima de otros elementos */
 }
 
 .header img {
-  height: 50px;
+  height: 80px;
   margin-right: 1rem;
 }
 
@@ -107,6 +114,20 @@ body {
   font-size: 1.8rem;
   color: #333;
   margin: 0;
+}
+
+.header button {
+  position: absolute;
+  right: 0; /* Esto coloca el botón lo más a la derecha posible */
+  top: 50%; /* Centra el botón verticalmente en el header */
+  transform: translateY(-50%); /* Ajusta el botón para que esté perfectamente centrado */
+  height: 80px; /* Ajusta el tamaño del botón */
+  width: 100px; /* Ajusta el tamaño del botón */
+  margin-right: 100px;
+  justify-content: center; /* Centra el texto horizontalmente */
+  align-items: center; /* Centra el texto verticalmente */
+
+
 }
 
 .button-grid {
