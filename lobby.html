@@ -1,10 +1,53 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Lobby</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lobby - Apuestas</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .lobby-container {
+      background: #ffffff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      width: 360px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .lobby-button {
+      padding: 1rem;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .lobby-button:hover {
+      background-color: #45a049;
+    }
+
+    .lobby-title {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+  </style>
 </head>
 <body>
-  <h1>¡Éxito!</h1>
+  <div class="lobby-container">
+    <div class="lobby-title">Bienvenido al Lobby</div>
+    <button class="lobby-button">Perfil</button>
+    <button class="lobby-button">Mis apuestas</button>
+    <button class="lobby-button">Clasificación</button>
+    <button class="lobby-button">Canjear puntos</button>
+    <button class="lobby-button">Casino</button>
+  </div>
 </body>
 </html>
