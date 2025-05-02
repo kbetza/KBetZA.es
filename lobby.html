@@ -1,24 +1,19 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lobby - Apuestas</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <title>Lobby</title>
 </head>
 <body>
-  <header class="header">
-    <img src="imagenes/logo.png" alt="Logo de apuestas" />
-    <h1>Bienvenido al Lobby</h1>
-    <button class="lobby-button">Perfil</button>
-  </header>
-
-  <main class="button-grid">
-    <!-- <button class="lobby-button">Perfil</button> -->
-    <button class="lobby-button">Mis apuestas</button>
-    <button class="lobby-button">Clasificación</button>
-    <button class="lobby-button">Canjear puntos</button>
-    <button class="lobby-button">Casino</button>
-  </main>
+  <h1 id="saludo"></h1>
+  <script>
+    const usuario = localStorage.getItem('usuario');
+    if (usuario) {
+      document.getElementById('saludo').textContent = `Hola ${usuario}`;
+    } else {
+      document.getElementById('saludo').textContent = 'No has iniciado sesión.';
+    }
+  </script>
 </body>
+
 </html>

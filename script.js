@@ -18,8 +18,9 @@ document.getElementById('login-form').addEventListener('submit', async function(
     const data = await response.json();
 
     if (data.success) {
+      localStorage.setItem('usuario', usuario);    
       window.location.href = 'lobby.html';
-    } else {
+    }else {
       errorMessage.innerText = 'Usuario o contraseña incorrectos.';
     }
   } catch (error) {
