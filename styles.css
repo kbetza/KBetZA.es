@@ -166,6 +166,46 @@ body {
   transition: background 0.3s;
 }
 
+/* Estilo para la tabla de clasificación */
+.clasificacion-tabla {
+  width: 80%;
+  margin-top: 2rem;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.clasificacion-tabla th,
+.clasificacion-tabla td {
+  padding: 1rem;
+  text-align: center;
+  font-size: 1rem;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+}
+
+.clasificacion-tabla th {
+  background-color: #4CAF50;
+  color: white;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+}
+
+.clasificacion-tabla td {
+  background-color: #f9f9f9;
+}
+
+.clasificacion-tabla tr:hover {
+  background-color: #e8f5e9;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.clasificacion-tabla td:first-child {
+  font-weight: bold;
+}
 
 @media (min-width: 768px) {
   .button-grid {
