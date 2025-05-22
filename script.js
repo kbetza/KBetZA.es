@@ -84,7 +84,6 @@ if (tablaContainer && loadingContainer && tablaBody) {
         else if (index >= total - 3) tr.classList.add('fila-ultima');
         else tr.classList.add('fila-azul');
 
-
         const tdPosicion = document.createElement('td');
         tdPosicion.textContent = index + 1;
         tr.appendChild(tdPosicion);
@@ -108,6 +107,7 @@ if (tablaContainer && loadingContainer && tablaBody) {
       loadingContainer.innerHTML = "<p style='color:red;'>Error cargando la clasificación.</p>";
     });
 }
+
 
 });
   
