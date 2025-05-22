@@ -8,7 +8,7 @@ body {
   justify-content: center;
   font-family: 'Poppins', sans-serif;
   flex-direction: column;
-  padding-top: 4rem; /* Ajusta esto según la altura del encabezado */
+  padding-top: 11rem; /* Ajusta esto según la altura del encabezado */
 
 }
 
@@ -105,6 +105,7 @@ body {
   z-index: 10;
   height: 80px;
   box-sizing: border-box;
+  margin-bottom: 5rem;
 }
 
 .header-left {
@@ -164,6 +165,57 @@ body {
   font-size: 1rem;
   cursor: pointer;
   transition: background 0.3s;
+}
+
+.clasificacion-tabla {
+  width: 80vw;
+  /* max-width: 1000px; */
+  margin: 3rem auto 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.clasificacion-tabla thead th {
+  background: linear-gradient(135deg, #4CAF50, #43a047);
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 1.1rem;
+  padding: 1.2rem;
+  border-bottom: 2px solid #388e3c;
+}
+
+.clasificacion-tabla tbody tr {
+  transition: background-color 0.3s;
+}
+
+.clasificacion-tabla tbody tr:nth-child(even) td {
+  background-color: #f3fef5;
+}
+
+.clasificacion-tabla tbody tr:nth-child(odd) td {
+  background-color: #ffffff;
+}
+
+.clasificacion-tabla td {
+  padding: 1.2rem;
+  text-align: center;
+  font-size: 1rem;
+  color: #333;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.clasificacion-tabla tbody tr:hover td {
+  background-color: #e6f9eb;
+  cursor: pointer;
+}
+
+.clasificacion-tabla td:first-child {
+  font-weight: 600;
+  color: #2e7d32;
 }
 
 
