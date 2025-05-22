@@ -56,4 +56,58 @@ document.addEventListener('DOMContentLoaded', function () {
       window.location.href = 'index.html';
     });
   }
+
+
+  
+// Script para clasificacion.html con loader y posición
+const tablaContainer = document.getElementById('tabla-container');
+const loadingContainer = document.getElementById('loading-container');
+const tablaBody = document.getElementById('bodyRows');
+
+if (tablaContainer && loadingContainer && tablaBody) {
+  const apiUrl = 'https://script.google.com/macros/s/AKfycbwVBBStxQcEfZDMZTyAJMWCPjIgMXbMDqm7_AKPigDO794napZym6M2SCyEBeH1pUhnDg/exec';
+
+  fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+      // Ordena por aciertos descendente
+      data.sort((a, b) => b.Aciertos - a.Aciertos);
+
+      const total = data.length;
+
+      data.forEach((row, index) => {
+        const tr = document.createElement('tr');
+
+        if (index === 0) tr.classList.add('fila-oro');
+        else if (index === 1) tr.classList.add('fila-plata');
+        else if (index === 2) tr.classList.add('fila-bronce');
+        else if (index >= total - 3) tr.classList.add('fila-ultima');
+        else tr.classList.add('fila-azul');
+
+        const tdPosicion = document.createElement('td');
+        tdPosicion.textContent = index + 1;
+        tr.appendChild(tdPosicion);
+
+        ['Jugador', 'Aciertos', 'Fallos'].forEach(key => {
+          const td = document.createElement('td');
+          td.textContent = row[key];
+          tr.appendChild(td);
+        });
+
+        tablaBody.appendChild(tr);
+      });
+
+
+      // Oculta el loader y muestra la tabla
+      loadingContainer.style.display = 'none';
+      tablaContainer.style.display = 'block';
+    })
+    .catch(error => {
+      console.error('Error cargando datos:', error);
+      loadingContainer.innerHTML = "<p style='color:red;'>Error cargando la clasificación.</p>";
+    });
+}
+
+
 });
+  
