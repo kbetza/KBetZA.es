@@ -195,7 +195,11 @@ if (tablaApuestas && numJornada && tablaCuerpo && loadingContainer)
       });
   }
 
-// Script para enviar apuestas
+});
+
+// ###############################################################################################################################
+
+  // Script para enviar apuestas
   document.getElementById('enviar-apuestas').addEventListener('click', () => {
   const filas = document.querySelectorAll('#bodyRows tr');
   const datosEnviar = [];
@@ -218,7 +222,7 @@ if (tablaApuestas && numJornada && tablaCuerpo && loadingContainer)
         jornada: "1", // Puedes reemplazar esto si tienes un valor dinámico
         idpartido: idpartido,
         pronostico: pronostico,
-        acierto: ""
+        acierto: "a"
       });
     }
   });
@@ -228,31 +232,31 @@ if (tablaApuestas && numJornada && tablaCuerpo && loadingContainer)
     return;
   }
 
-const url = "https://script.google.com/macros/s/AKfycby9yyN4vvbKq-51BYxJrPRo6NC__cPYFZbPo-1EpQHPMgcDTyLQ87LHaqCQ_zFkwBig/exec";
+const url = "https://script.google.com/macros/s/AKfycbw1kCYLJCmKWuCEj0sY6yMbK5Zlmf5abB0YJpQre_HeRZqp7ut4VqxNvq-Ay6CZJgEryg/exec";
 
 fetch(url, {
   method: "POST",
+  mode: 'no-cors',
   headers: {
     "Content-Type": "application/json"
   },
   body: JSON.stringify(datosEnviar)
 })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response.json();
-  })
-  .then(data => {
+  .then(() => {
     alert("¡Apuestas enviadas correctamente!");
-    console.log("Respuesta del servidor:", data);
   })
   .catch(error => {
     console.error("Error al enviar los datos:", error);
     alert("Error al enviar las apuestas. Inténtalo más tarde.");
   });
 
-});
 
 });
+
+
+// #####################################################################################################################################
+
+
+
+
   
