@@ -108,7 +108,7 @@ if (tablaContainer && loadingContainer && tablaBody)
       console.error('Error cargando datos:', error);
       loadingContainer.innerHTML = "<p style='color:red;'>Error cargando la clasificación.</p>";
     });
- }
+  }
     const tablaApuestas = document.getElementById('tabla-apuestas');
     const tablaCuerpo = document.getElementById('bodyRows');
     const numJornada = document.getElementById('num-jornada');
@@ -203,6 +203,9 @@ if (tablaApuestas && numJornada && tablaCuerpo && loadingContainer)
   document.getElementById('enviar-apuestas').addEventListener('click', () => {
   const filas = document.querySelectorAll('#bodyRows tr');
   const datosEnviar = [];
+  const ahora = new Date();
+  const fechaDia = ahora.toLocaleDateString();
+  const fechaHora = ahora.toLocaleTimeString();
 
   filas.forEach((fila, index) => {
     const radios = fila.querySelectorAll('input[type="radio"]');
@@ -217,12 +220,17 @@ if (tablaApuestas && numJornada && tablaCuerpo && loadingContainer)
       const idVisitante = fila.querySelector('.id-visitante').textContent.trim();
       const idpartido = idLocal + idVisitante;
 
+      const nombreUsuario = document.getElementById('nombre-usuario').textContent;
+      const jornada = fila.querySelector('.jornada').textContent.trim();
       datosEnviar.push({
-        jugador: "patata",
-        jornada: "1", // Puedes reemplazar esto si tienes un valor dinámico
+        jugador: nombreUsuario,
+        jornada: jornada,
         idpartido: idpartido,
         pronostico: pronostico,
-        acierto: "a"
+        acierto: "",
+        dia: fechaDia, 
+        hora:fechaHora
+
       });
     }
   });
@@ -232,7 +240,7 @@ if (tablaApuestas && numJornada && tablaCuerpo && loadingContainer)
     return;
   }
 
-const url = "https://script.google.com/macros/s/AKfycbw1kCYLJCmKWuCEj0sY6yMbK5Zlmf5abB0YJpQre_HeRZqp7ut4VqxNvq-Ay6CZJgEryg/exec";
+const url = "https://script.google.com/macros/s/AKfycbyI-mHT9MQax_P2GT8Jlb22n8FtwBsAb2m7vyNLitjTHlZD-bGqHN08qYtlN546FNx6pw/exec";
 
 fetch(url, {
   method: "POST",
@@ -249,8 +257,6 @@ fetch(url, {
     console.error("Error al enviar los datos:", error);
     alert("Error al enviar las apuestas. Inténtalo más tarde.");
   });
-
-
 });
 
 
