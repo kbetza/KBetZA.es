@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function ()
 
       // Limpia mensajes anteriores
       errorMessage.innerText = '';
-
       try {
         const response = await fetch('https://script.google.com/macros/s/AKfycbx4JvahQC0U2qzE1K5hnCxsbTdn_6v8ctxEweBK-h9O77afi_tT6cONU1kX_zTKqq579g/exec', {
           method: 'POST',
@@ -199,15 +198,24 @@ if (tablaApuestas && numJornada && tablaCuerpo && loadingContainer)
 
 // ###############################################################################################################################
 
-  // Script para enviar apuestas
-  document.getElementById('enviar-apuestas').addEventListener('click', () => {
+
+
+
+
+
+// ###############################################################################################################################
+
+ // Script para enviar apuestas
+document.getElementById('enviar-apuestas').addEventListener('click', () => {
   const filas = document.querySelectorAll('#bodyRows tr');
   const datosEnviar = [];
   const ahora = new Date();
   const fechaDia = ahora.toLocaleDateString();
   const fechaHora = ahora.toLocaleTimeString();
 
-  filas.forEach((fila, index) => {
+  let apuestasIncompletas = false;
+
+  filas.forEach((fila) => {
     const radios = fila.querySelectorAll('input[type="radio"]');
     let pronostico = "";
 
@@ -215,7 +223,9 @@ if (tablaApuestas && numJornada && tablaCuerpo && loadingContainer)
       if (radio.checked) pronostico = radio.value;
     });
 
-    if (pronostico) {
+    if (!pronostico) {
+      apuestasIncompletas = true; // Se encontró una fila sin apuesta
+    } else {
       const idLocal = fila.querySelector('.id-local').textContent.trim();
       const idVisitante = fila.querySelector('.id-visitante').textContent.trim();
       const idpartido = idLocal + idVisitante;
@@ -229,34 +239,33 @@ if (tablaApuestas && numJornada && tablaCuerpo && loadingContainer)
         pronostico: pronostico,
         acierto: "",
         dia: fechaDia, 
-        hora:fechaHora
-
+        hora: fechaHora
       });
     }
   });
 
-  if (datosEnviar.length === 0) {
-    alert("No se ha seleccionado ninguna apuesta.");
+  if (apuestasIncompletas) {
+    alert("Debes seleccionar un resultado en todos los partidos antes de enviar la apuesta.");
     return;
   }
 
-const url = "https://script.google.com/macros/s/AKfycbyI-mHT9MQax_P2GT8Jlb22n8FtwBsAb2m7vyNLitjTHlZD-bGqHN08qYtlN546FNx6pw/exec";
+  const url = "https://script.google.com/macros/s/AKfycbyzYjaAuTdr0fB2SkZWgp91Hsb3eNBtaP8IdY2Xgic4DKsqt2cp62Ave2k5rpkgk-CsUA/exec";
 
-fetch(url, {
-  method: "POST",
-  mode: 'no-cors',
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify(datosEnviar)
-})
-  .then(() => {
-    alert("¡Apuestas enviadas correctamente!");
+  fetch(url, {
+    method: "POST",
+    mode: 'no-cors',
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(datosEnviar)
   })
-  .catch(error => {
-    console.error("Error al enviar los datos:", error);
-    alert("Error al enviar las apuestas. Inténtalo más tarde.");
-  });
+    .then(() => {
+      alert("¡Apuestas enviadas correctamente!");
+    })
+    .catch(error => {
+      console.error("Error al enviar los datos:", error);
+      alert("Error al enviar las apuestas. Inténtalo más tarde.");
+    });
 });
 
 
