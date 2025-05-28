@@ -1,0 +1,41 @@
+CLASIFICACION
+
+	se permite ver la clasificación desde el botón clasificación del lobby
+
+	la clasificación muestra la información almacenada en un drive
+
+	faltaría un método que desde bet-prognostics volcase periódicamente los aciertos y fallos en la tabla clasificación
+
+
+MIS APUESTAS
+
+	se permite ver la apuesta que se encuentra en el drive 	bets-matches
+
+	el drive bets-matches esta preparado para actualizar los resultados de los partidos que se encuentran en el
+
+	el drive bet-matches esta preparado para actualizar la información del drive bet-prognostics con la información de los partidos finalizados
+
+	faltaría un método que actualice la jornada de la tabla bet-matches una vez finalizados todos los partidos y calculado todos los aciertos de dicha jornada en bet-prognostics
+
+	faltaría distribuir la pestaña mis apuestas en varios botones (jornadas acabadas, jornadas en juego, jornadas pendientes, etc.)
+
+	faltaría realizar un control más exigente para que una persona realice una única apuesta
+
+	faltaría incluir en el Excel bet-prognostics incluir el nombre del equipo local y visitante al lado del pronostico del usuario
+
+
+
+CANJEAR PUNTOS
+
+	necesitamos un sistema de asignación de puntos a los usuarios basado por ejemplo en cuotas de casas de apuestas
+
+	si el usuario acierta mas de 5 partidos se suman las cuotas y si acierta mas de 7 se multiplican las cuotas, por ejemplo
+
+	
+CASINO
+
+	ruleta
+
+	blackjack
+
+	meter tiradas diarias gratuitas en ambas (créditos de apuesta)
