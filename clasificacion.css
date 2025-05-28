@@ -2,15 +2,9 @@ body {
   margin: 0;
   padding: 0;
   background: linear-gradient(135deg, #74ff92 0%, #bdffc7 100%);
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-family: 'Poppins', sans-serif;
-  flex-direction: column;
   /* padding-top: 15rem; Mantiene separación por el header */
 }
-
 .header {
   display: flex;
   align-items: center;
@@ -64,12 +58,12 @@ body {
 
 .main-content {
   width: 100%;
-  display: flex;        
+  display: flex;
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
+  padding-top: 6rem; /* espacio para que no se oculte detrás del header */
 }
-
 
 .clasificacion-tabla {
   width: 80vw;
@@ -121,39 +115,40 @@ body {
   color: #2e7d32;
 }
 .fila-oro td:first-child {
-  background-color: #e4aa19 !important; /* dorado claro */
-  color: #fff8dc !important; /* dorado oscuro */
+  background-color: #f9c74f !important; /* dorado suave */
+  color: #fff3f3 !important;            /* marrón oscuro para contraste */
   font-weight: bold;
-  border-radius: 6px 0 0 6px; /* solo esquinas izquierdas para el primer td */
+  border-radius: 6px 0 0 6px;
 }
 
 .fila-plata td:first-child {
-  background-color: #adadad !important;
-  color: #f0f0f0 !important;
+  background-color: #cfd8dc !important; /* plata suave */
+  color: #fff3f3 !important;            /* gris oscuro */
   font-weight: bold;
   border-radius: 6px 0 0 6px;
 }
 
 .fila-bronce td:first-child {   
-  background-color: #c98541 !important;
-  color: #fbe4d5 !important;
+  background-color: #e0a96d !important; /* bronce más cálido */
+  color: #fff3f3 !important;
   font-weight: bold;
   border-radius: 6px 0 0 6px;
 }
 
 .fila-ultima td:first-child {
-  background-color: #d44636 !important;
-  color: #ffe5e5 !important;
+  background-color: #ef5350 !important; /* rojo claro */
+  color: #fff3f3 !important;
   font-weight: bold;
   border-radius: 6px 0 0 6px;
 }
 
 .fila-azul td:first-child {
-  background-color: #3862d4!important; /* azul oscuro */
-  color: #dbeafe; /* texto azul claro */
+  background-color: #64b5f6 !important; /* azul suave */
+  color: #fff3f3 !important;
   font-weight: bold;
   border-radius: 6px 0 0 6px;
 }
+
 
 @media (min-width: 48rem) { /* 768px */
   .button-grid {
