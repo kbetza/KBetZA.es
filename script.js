@@ -140,12 +140,38 @@ if (tablaApuestas && numJornada && tablaCuerpo && loadingContainer)
           tr.appendChild(tdHora);
 
           const tdEquipo_Local = document.createElement('td');
-          tdEquipo_Local.textContent = partido.Equipo_Local;
+          const imgLocal = document.createElement('img');
+          imgLocal.src = `logos/${partido.ID_Local}.png`;
+          imgLocal.alt = partido.Equipo_Local;
+          imgLocal.title = partido.Equipo_Local;
+          imgLocal.style.height = '40px';
+          imgLocal.style.objectFit = 'contain';
+          tdEquipo_Local.appendChild(imgLocal);
           tr.appendChild(tdEquipo_Local);
 
           const tdVisitante = document.createElement('td');
-          tdVisitante.textContent = partido.Equipo_Visitante;
+          const imgVisitante = document.createElement('img');
+          imgVisitante.src = `logos/${partido.ID_Visitante}.png`;
+          imgVisitante.alt = partido.Equipo_Visitante;
+          imgVisitante.title = partido.Equipo_Visitante;
+          imgVisitante.style.height = '40px';
+          imgVisitante.style.objectFit = 'contain';
+          tdVisitante.appendChild(imgVisitante);
           tr.appendChild(tdVisitante);
+
+          const spanLocal = document.createElement('span');
+          spanLocal.textContent = partido.Equipo_Local;
+          spanLocal.style.display = 'block';
+          spanLocal.style.fontSize = '0.8rem';
+          spanLocal.style.marginTop = '4px';
+          tdEquipo_Local.appendChild(spanLocal);
+          const spanVisitante = document.createElement('span');
+          spanVisitante.textContent = partido.Equipo_Visitante;
+          spanVisitante.style.display = 'block';
+          spanVisitante.style.fontSize = '0.8rem';
+          spanVisitante.style.marginTop = '4px';
+          tdVisitante.appendChild(spanVisitante);
+
 
           const tdApuesta = document.createElement('td');
           ['1', 'X', '2'].forEach((opcion) => {
@@ -179,7 +205,7 @@ if (tablaApuestas && numJornada && tablaCuerpo && loadingContainer)
           // JORNADA (oculto)
           const tdJornada = document.createElement('td');
           tdJornada.textContent = partido.Jornada.replace('Regular Season - ', '');
-          numJornada.textContent =  ("J." + tdJornada.textContent);
+          numJornada.textContent =  ("JORNADA " + tdJornada.textContent);
           tdJornada.style.display = 'none';
           tdJornada.classList.add('jornada');
           tr.appendChild(tdJornada);
