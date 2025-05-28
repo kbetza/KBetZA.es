@@ -114,7 +114,7 @@ if (tablaContainer && loadingContainer && tablaBody)
 
 if (tablaApuestas && numJornada && tablaCuerpo && loadingContainer) 
   {
-    const apiUrl = 'https://script.google.com/macros/s/AKfycbx1nw6XuGGaFbFcMUMUdPJxhR2TqcEPzQjp_W9sB4XZtZGghRNvNA0HjZhjRQSmHpoQ/exec';
+    const apiUrl = 'https://script.google.com/macros/s/AKfycbySRZVi7MrQhU9gKAl1dRCzU3mNh7QSHFHDzh1UWPHHgMG9jDsHNpybWMzyKjkRzxfH/exec';
 
     fetch(apiUrl)
       .then(response => response.json())
@@ -161,12 +161,15 @@ if (tablaApuestas && numJornada && tablaCuerpo && loadingContainer)
 
           const spanLocal = document.createElement('span');
           spanLocal.textContent = partido.Equipo_Local;
+          spanLocal.classList.add('nombre-local');
           spanLocal.style.display = 'block';
           spanLocal.style.fontSize = '0.8rem';
           spanLocal.style.marginTop = '4px';
           tdEquipo_Local.appendChild(spanLocal);
+
           const spanVisitante = document.createElement('span');
           spanVisitante.textContent = partido.Equipo_Visitante;
+          spanVisitante.classList.add('nombre-visitante');
           spanVisitante.style.display = 'block';
           spanVisitante.style.fontSize = '0.8rem';
           spanVisitante.style.marginTop = '4px';
@@ -201,8 +204,7 @@ if (tablaApuestas && numJornada && tablaCuerpo && loadingContainer)
           tdIDVisitante.style.display = 'none';
           tdIDVisitante.classList.add('id-visitante');
           tr.appendChild(tdIDVisitante);
-
-          // JORNADA (oculto)
+          // ID Partido (oculto)
           const tdJornada = document.createElement('td');
           tdJornada.textContent = partido.Jornada.replace('Regular Season - ', '');
           numJornada.textContent =  ("JORNADA " + tdJornada.textContent);
@@ -255,13 +257,17 @@ document.getElementById('enviar-apuestas').addEventListener('click', () => {
       const idLocal = fila.querySelector('.id-local').textContent.trim();
       const idVisitante = fila.querySelector('.id-visitante').textContent.trim();
       const idpartido = idLocal + idVisitante;
-
+      const nombreLocal = fila.querySelector('.nombre-local').textContent.trim();
+      const nombreVisitante = fila.querySelector('.nombre-visitante').textContent.trim();
+      console.log(nombreLocal, nombreVisitante);
       const nombreUsuario = document.getElementById('nombre-usuario').textContent;
       const jornada = fila.querySelector('.jornada').textContent.trim();
       datosEnviar.push({
         jugador: nombreUsuario,
         jornada: jornada,
         idpartido: idpartido,
+        equipo_Local: nombreLocal,
+        equipo_Visitante: nombreVisitante,
         pronostico: pronostico,
         acierto: "",
         dia: fechaDia, 
@@ -275,7 +281,7 @@ document.getElementById('enviar-apuestas').addEventListener('click', () => {
     return;
   }
 
-  const url = "https://script.google.com/macros/s/AKfycbyzYjaAuTdr0fB2SkZWgp91Hsb3eNBtaP8IdY2Xgic4DKsqt2cp62Ave2k5rpkgk-CsUA/exec";
+  const url = "https://script.google.com/macros/s/AKfycbxfuoSmT_MWwKqMp9lHBMY8m_XXdAYjbiu-O12ss4xXDCFKxYBV4u4qFYWQp5OK9S1HdA/exec";
 
   fetch(url, {
     method: "POST",
