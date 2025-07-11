@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apuestas</title>
+    <link rel="stylesheet" href="styles/lobby.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="header-left">
+      <a href="lobby.html"><img src="imagenes/logo.png" alt="Logo de apuestas"/></a>
+      <h1>Bienvenido, <span id="nombre-usuario"></span></h1>
+    </div>
+    <div class="header-right">
+      <button class="header-button" onclick="window.location.href='perfil.html'" >Perfil</button>
+      <button id="cerrar-sesion" class="header-button">Cerrar sesión</button>
+    </div>
+  </header>
+    <main class="button-grid">
+        <button class="lobby-button" onclick="window.location.href='apuestas.html'">Realizar Apuesta</button>
+        <button class="lobby-button" onclick="window.location.href='historial.html'">Ver Historial</button>
+        <button class="lobby-button" onclick="window.location.href='jornadas_pendientes.html'">Jornadas Pendientes </button>
+    </main>
+</body>
+</html>

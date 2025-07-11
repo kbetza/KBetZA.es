@@ -21,7 +21,6 @@ MIS APUESTAS
 
 	faltaría realizar un control más exigente para que una persona realice una única apuesta
 
-	faltaría incluir en el Excel bet-prognostics incluir el nombre del equipo local y visitante al lado del pronostico del usuario
 
 
 
@@ -39,3 +38,5 @@ CASINO
 	blackjack
 
 	meter tiradas diarias gratuitas en ambas (créditos de apuesta)
+
+HACER UN GOOGLE APPS SCRIPT que muestre en un calendario todos los partidos

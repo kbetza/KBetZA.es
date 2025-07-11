@@ -1,0 +1,13 @@
+NECESITAMOS UN METODO PARA OBTENER LA JORNADA ACTUAL
+    - obtener la apuesta que toca hacer 
+    - ver el corte para jornadas pendientes
+
+REALIZAR APUESTAS
+    - bloquear boton si ya ha hecho apuesta para la jornada actual
+
+VER HISTORIAL APUESTAS
+    - leer best-prognostics y mostrar los datos de dicho usuario
+
+VER JORNADAS PENDIENTES
+    - leer get-matches y mostrar los siguientes a la jornada actual y/o partidos no finalizados 
+
