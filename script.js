@@ -205,8 +205,16 @@ if (tablaApuestas && numJornada && tablaCuerpo && loadingContainer)
           tdIDVisitante.classList.add('id-visitante');
           tr.appendChild(tdIDVisitante);
           // ID Partido (oculto)
+          const tdID_partido = document.createElement('td');
+          tdID_partido.textContent = partido.ID_partido;
+          tdID_partido.style.display = 'none';
+          tdID_partido.classList.add('id-partido');
+          tr.appendChild(tdID_partido);
+
+
+
           const tdJornada = document.createElement('td');
-          tdJornada.textContent = partido.Jornada.replace('Regular Season - ', '');
+          tdJornada.textContent = partido.Jornada.replace('Regular season - ', '');
           numJornada.textContent =  ("JORNADA " + tdJornada.textContent);
           tdJornada.style.display = 'none';
           tdJornada.classList.add('jornada');
@@ -256,12 +264,13 @@ document.getElementById('enviar-apuestas').addEventListener('click', () => {
     } else {
       const idLocal = fila.querySelector('.id-local').textContent.trim();
       const idVisitante = fila.querySelector('.id-visitante').textContent.trim();
-      const idpartido = idLocal + idVisitante;
+      const idpartido = fila.querySelector('.id-partido').textContent.trim(); 
       const nombreLocal = fila.querySelector('.nombre-local').textContent.trim();
       const nombreVisitante = fila.querySelector('.nombre-visitante').textContent.trim();
       console.log(nombreLocal, nombreVisitante);
       const nombreUsuario = document.getElementById('nombre-usuario').textContent;
       const jornada = fila.querySelector('.jornada').textContent.trim();
+      jornada.split(' - ')[1]; // Extrae el número de jornada
       datosEnviar.push({
         jugador: nombreUsuario,
         jornada: jornada,
@@ -306,4 +315,3 @@ document.getElementById('enviar-apuestas').addEventListener('click', () => {
 
 
 
-  
