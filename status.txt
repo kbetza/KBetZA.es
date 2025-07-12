@@ -9,19 +9,10 @@ CLASIFICACION
 
 MIS APUESTAS
 
-	se permite ver la apuesta que se encuentra en el drive 	bets-matches
-
-	el drive bets-matches esta preparado para actualizar los resultados de los partidos que se encuentran en el
-
-	el drive bet-matches esta preparado para actualizar la información del drive bet-prognostics con la información de los partidos finalizados
-
-	faltaría un método que actualice la jornada de la tabla bet-matches una vez finalizados todos los partidos y calculado todos los aciertos de dicha jornada en bet-prognostics
-
-	faltaría distribuir la pestaña mis apuestas en varios botones (jornadas acabadas, jornadas en juego, jornadas pendientes, etc.)
-
 	faltaría realizar un control más exigente para que una persona realice una única apuesta
-
-
+	
+	faltaría traernos de futbol-org la clasificación de la liga para otorgar los puntos segun la posicion de cada equipo
+	
 
 
 CANJEAR PUNTOS
