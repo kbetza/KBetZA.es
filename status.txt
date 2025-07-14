@@ -31,3 +31,10 @@ CASINO
 	meter tiradas diarias gratuitas en ambas (créditos de apuesta)
 
 HACER UN GOOGLE APPS SCRIPT que muestre en un calendario todos los partidos
+
+
+
+
+URL DE APPS SCRIPT CLASIFIACION DE LA LIGA
+
+https://script.google.com/macros/s/AKfycbyTxXtNASVi5Gmf9dstPVtDVTemZwE__DumgG08ADdne2IsjDAkD3Hq1OzqS0QBHv3o/exec

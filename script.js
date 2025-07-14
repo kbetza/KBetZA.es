@@ -66,7 +66,7 @@ const tablaBody = document.getElementById('bodyRows');
 
 if (tablaContainer && loadingContainer && tablaBody) 
   {
-  const apiUrl = 'https://script.google.com/macros/s/AKfycbwVBBStxQcEfZDMZTyAJMWCPjIgMXbMDqm7_AKPigDO794napZym6M2SCyEBeH1pUhnDg/exec';
+  const apiUrl = 'https://script.google.com/macros/s/AKfycbyNi3iEK0-l8wwAG3snYs1EMT__EaI1T9UeRR07G_m3Je4DiJfYc0ioubEgi2iyvsjAkQ/exec';
 
   fetch(apiUrl)
     .then(response => response.json())
@@ -89,7 +89,7 @@ if (tablaContainer && loadingContainer && tablaBody)
         tdPosicion.textContent = index + 1;
         tr.appendChild(tdPosicion);
 
-        ['Jugador', 'Aciertos', 'Fallos'].forEach(key => {
+        ["Jugador","Puntos ganados", "Aciertos", "Apuestas realizadas"].forEach(key => {
           const td = document.createElement('td');
           td.textContent = row[key];
           tr.appendChild(td);
@@ -108,6 +108,74 @@ if (tablaContainer && loadingContainer && tablaBody)
       loadingContainer.innerHTML = "<p style='color:red;'>Error cargando la clasificación.</p>";
     });
   }
+
+const tablaContainerLiga = document.getElementById('tabla-containerLiga');
+if (tablaContainerLiga && loadingContainer && tablaBody) 
+  {
+  const apiUrl = 'https://script.google.com/macros/s/AKfycbyfXqPoVpNzDwit9cVH0o_1E60fGL5B5Bx_dt58mw6tRg4jG3_UnJOJaOL2xFJCCcwA/exec';
+
+  fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+      // Ordena por aciertos descendente
+      data.sort((a, b) => b.Aciertos - a.Aciertos);
+
+      const total = data.length;
+
+      data.forEach((row, index) => {
+        const tr = document.createElement('tr');
+
+        if (index === 0) tr.classList.add('fila-oro');
+        else if (index === 1) tr.classList.add('fila-plata');
+        else if (index === 2) tr.classList.add('fila-bronce');
+        else if (index >= total - 3) tr.classList.add('fila-ultima');
+        else tr.classList.add('fila-azul');
+
+        const tdPosicion = document.createElement('td');
+        tdPosicion.textContent = index + 1;
+        tr.appendChild(tdPosicion);
+        ["Equipo", "PJ", "PG", "PE", "PP", "GF", "GC", "DG", "Pts"].forEach(key => {
+          const td = document.createElement('td');
+
+          if (key === "Equipo") {
+            td.style.textAlign = 'left'; 
+            const imagen = document.createElement('img');
+            const id = row["id_equipo"];
+            imagen.src = `logos/${id}.png`;
+            imagen.title = row["Equipo"];
+            imagen.alt = row["Equipo"];
+            imagen.style.height = '40px';
+            imagen.style.objectFit = 'contain';
+            imagen.style.marginRight = '8px';
+            imagen.style.verticalAlign = 'middle';
+
+            const nombreEquipo = document.createElement('span');
+            nombreEquipo.textContent = row["Equipo"];
+            nombreEquipo.style.verticalAlign = 'middle';
+
+            td.appendChild(imagen);
+            td.appendChild(nombreEquipo);
+          } else {
+            td.textContent = row[key];
+          }
+
+          tr.appendChild(td);
+        });
+
+
+        tablaBody.appendChild(tr);
+      });
+      // Oculta el loader y muestra la tabla
+      loadingContainer.style.display = 'none';
+      tablaContainerLiga.style.display = 'block';
+    })
+    .catch(error => {
+      console.error('Error cargando datos:', error);
+      loadingContainer.innerHTML = "<p style='color:red;'>Error cargando la clasificación.</p>";
+    });
+  }
+
+
     const tablaApuestas = document.getElementById('tabla-apuestas');
     const tablaCuerpo = document.getElementById('bodyRows');
     const numJornada = document.getElementById('num-jornada');

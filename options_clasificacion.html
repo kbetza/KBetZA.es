@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clasificación</title>
+    <link rel="stylesheet" href="styles/lobby.css" />
+</head>
+<body>
+    <header class="header">
+    <div class="header-left">
+        <a href="lobby.html"><img src="imagenes/logo.png" alt="Logo de apuestas"/></a>
+        <h1>Bienvenido, <span id="nombre-usuario"></span></h1>
+    </div>
+    <div class="header-right">
+        <button class="header-button" onclick="window.location.href='perfil.html'" >Perfil</button>
+        <button id="cerrar-sesion" class="header-button">Cerrar sesión</button>
+    </div>
+    </header>
+        <main class="button-grid">
+        <button class="lobby-button" onclick="window.location.href='clasificacion_jugadores.html'">Clasificación Jugadores</button>
+        <button class="lobby-button" onclick="window.location.href='clasifacion_liga.html'">Clasificación La Liga</button>
+    </main>
+</body>
+</html>
