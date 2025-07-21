@@ -245,20 +245,41 @@ if (tablaApuestas && numJornada && tablaCuerpo && loadingContainer)
 
 
           const tdApuesta = document.createElement('td');
-          ['1', 'X', '2'].forEach((opcion) => {
-          const label = document.createElement('label');
-          label.style.marginRight = '10px';
 
-          const radio = document.createElement('input');
-          radio.type = 'radio';
-          radio.name = `apuesta-${index}`; // Agrupa radios por fila
-          radio.value = opcion;
-  
-          label.appendChild(radio);
-          label.appendChild(document.createTextNode(` ${opcion}`));
-          tdApuesta.appendChild(label);
+          ['1', 'X', '2'].forEach((opcion) => {
+            const label = document.createElement('label');
+            label.style.marginRight = '10px';
+            label.style.display = 'inline-block';
+            label.style.textAlign = 'center';
+            label.style.fontSize = '0.85rem';
+
+            const radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = `apuesta-${index}`;
+            radio.value = opcion;
+            const cuota = opcion === '1' ? partido.Cuota_Local :
+            opcion === 'X' ? partido.Cuota_Empate :
+            partido.Cuota_Visitante;
+            radio.setAttribute('data-cuota', cuota);
+
+
+            const div = document.createElement('div');
+            div.appendChild(document.createTextNode(` ${opcion}`));
+
+            const cuotaSpan = document.createElement('div');
+            cuotaSpan.textContent = `${cuota}`;
+            cuotaSpan.style.fontSize = '0.75rem';
+            cuotaSpan.style.color = '#666';
+            
+            label.appendChild(div); 
+            label.appendChild(radio);
+            label.appendChild(cuotaSpan); 
+            tdApuesta.appendChild(label);
           });
-        tr.appendChild(tdApuesta);
+
+          tr.appendChild(tdApuesta);
+
+
               // ID Local (oculto)
           const tdIDLocal = document.createElement('td');
           tdIDLocal.textContent = partido.ID_Local;
@@ -322,10 +343,15 @@ document.getElementById('enviar-apuestas').addEventListener('click', () => {
   filas.forEach((fila) => {
     const radios = fila.querySelectorAll('input[type="radio"]');
     let pronostico = "";
-
+    let cuotaSeleccionada = "";
+     
     radios.forEach(radio => {
-      if (radio.checked) pronostico = radio.value;
+      if (radio.checked) {
+        pronostico = radio.value;
+        cuotaSeleccionada = radio.getAttribute('data-cuota');
+      }
     });
+
 
     if (!pronostico) {
       apuestasIncompletas = true; // Se encontró una fila sin apuesta
@@ -348,7 +374,8 @@ document.getElementById('enviar-apuestas').addEventListener('click', () => {
         pronostico: pronostico,
         acierto: "",
         dia: fechaDia, 
-        hora: fechaHora
+        hora: fechaHora,
+        cuota: cuotaSeleccionada
       });
     }
   });
@@ -358,7 +385,7 @@ document.getElementById('enviar-apuestas').addEventListener('click', () => {
     return;
   }
 
-  const url = "https://script.google.com/macros/s/AKfycbxfuoSmT_MWwKqMp9lHBMY8m_XXdAYjbiu-O12ss4xXDCFKxYBV4u4qFYWQp5OK9S1HdA/exec";
+  const url = "https://script.google.com/macros/s/AKfycbyiUgfjYJookDhHMnOQbk1lFZ7MAHke1UW0R1qdD7rnbPuLzRRERmAscpb68Z3NJb70YQ/exec";
 
   fetch(url, {
     method: "POST",
@@ -370,6 +397,7 @@ document.getElementById('enviar-apuestas').addEventListener('click', () => {
   })
     .then(() => {
       alert("¡Apuestas enviadas correctamente!");
+    
     })
     .catch(error => {
       console.error("Error al enviar los datos:", error);
