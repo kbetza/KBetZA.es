@@ -174,8 +174,6 @@ if (tablaContainerLiga && loadingContainer && tablaBody)
       loadingContainer.innerHTML = "<p style='color:red;'>Error cargando la clasificación.</p>";
     });
   }
-
-
     const tablaApuestas = document.getElementById('tabla-apuestas');
     const tablaCuerpo = document.getElementById('bodyRows');
     const numJornada = document.getElementById('num-jornada');
@@ -323,11 +321,6 @@ if (tablaApuestas && numJornada && tablaCuerpo && loadingContainer)
 
 // ###############################################################################################################################
 
-
-
-
-
-
 // ###############################################################################################################################
 
  // Script para enviar apuestas
@@ -403,7 +396,6 @@ document.getElementById('enviar-apuestas').addEventListener('click', () => {
       alert("Error al enviar las apuestas. Inténtalo más tarde.");
     });
 });
-
 
 // #####################################################################################################################################
 

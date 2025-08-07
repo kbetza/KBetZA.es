@@ -3,9 +3,94 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Clasificación</title>
-  <link rel="stylesheet" href="" />
+  <title>Mis Apuestas</title>
+  <link rel="stylesheet" href="styles/historial.css" />
 </head>
 <body>
-    
+  <header class="header">
+    <div class="header-left">
+      <a href="lobby.html"><img src="imagenes/logo.png" alt="Logo de apuestas"/></a>
+      <h1>Mis Apuestas</h1>
+    </div>
+    <div class="header-right">
+      <button class="header-button" onclick="window.location.href='perfil.html'" >Perfil</button>
+      <button id="cerrar-sesion" class="header-button">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main>
+    <table id="tabla-apuestas">
+      <thead>
+        <tr>
+          <th>Jornada</th>
+          <th>Equipo Local</th>
+          <th>Equipo Visitante</th>
+          <th>Pronóstico</th>
+          <th>Acierto</th>
+          <th>Día</th>
+          <th>Hora</th>
+          <th>Cuota</th>
+          <th>Resultado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Se rellenará con JS -->
+      </tbody>
+    </table>
+  </main>
+
+  <script>
+    function formatearFecha(fechaIso) {
+      const fecha = new Date(fechaIso);
+      return fecha.toISOString().split('T')[0]; // Devuelve solo YYYY-MM-DD
+    }
+
+    function formatearHora(horaIso) {
+      const fecha = new Date(horaIso);
+      return fecha.toTimeString().split(' ')[0]; // Devuelve solo HH:MM:SS
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const jugador = localStorage.getItem("usuario"); // o sessionStorage, según tu lógica
+      if (!jugador) {
+        alert("No has iniciado sesión.");
+        window.location.href = "login.html";
+        return;
+      }
+
+      const url = `https://script.google.com/macros/s/AKfycbxkJFtz-_GbMYRFsdURUdM-zIoBsCj2qeFB-kVw8zyKIr-NT_FajqZcmWbo46F7ZWUBiQ/exec?jugador=${encodeURIComponent('prueba0')}`;
+
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          if (!Array.isArray(data)) {
+            console.error("Error en respuesta:", data);
+            return;
+          }
+
+          const tbody = document.querySelector("#tabla-apuestas tbody");
+          tbody.innerHTML = "";
+
+          data.forEach(apuesta => {
+            const fila = document.createElement("tr");
+            fila.innerHTML = `
+              <td>${apuesta.jornada || ''}</td>
+              <td>${apuesta.equipo_Local || ''}</td>
+              <td>${apuesta.equipo_Visitante || ''}</td>
+              <td>${apuesta.pronostico || ''}</td>
+              <td>${apuesta.acierto === true ? '✅' : apuesta.acierto === false ? '❌' : ''}</td>
+              <td>${formatearFecha(apuesta.dia)}</td>
+              <td>${formatearHora(apuesta.hora)}</td>
+              <td>${apuesta.cuota || ''}</td>
+              <td>${apuesta.resultado || ''}</td>
+            `;
+            tbody.appendChild(fila);
+          });
+        })
+        .catch(err => {
+          console.error("Error al obtener apuestas:", err);
+        });
+    });
+  </script>
 </body>
+</html>
