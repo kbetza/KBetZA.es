@@ -344,7 +344,6 @@ document.getElementById('enviar-apuestas').addEventListener('click', () => {
     const radios = fila.querySelectorAll('input[type="radio"]');
     let pronostico = "";
     let cuotaSeleccionada = "";
-     
     radios.forEach(radio => {
       if (radio.checked) {
         pronostico = radio.value;
@@ -385,7 +384,7 @@ document.getElementById('enviar-apuestas').addEventListener('click', () => {
     return;
   }
 
-  const url = "https://script.google.com/macros/s/AKfycbyiUgfjYJookDhHMnOQbk1lFZ7MAHke1UW0R1qdD7rnbPuLzRRERmAscpb68Z3NJb70YQ/exec";
+  const url = "https://script.google.com/macros/s/AKfycbzLqwPQfamMyMLxOZXdn-aCaHLktkG4k7a6ssAR4DFypZr2juDSVw3BSgzxJ4EDOS9VRQ/exec";
 
   fetch(url, {
     method: "POST",
