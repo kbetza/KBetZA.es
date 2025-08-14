@@ -55,60 +55,97 @@ body {
     transition: background 0.3s;
 }   
 
+.header-button:hover {
+    background-color: #45a049;
+}   
+
 main {
     padding-top: 7rem;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
 }   
 
-#tabla-apuestas {
+/* Caja de cada jornada */
+.jornada-box {
     width: 90%;
     max-width: 1100px;
     background-color: #ffffffcc;
-    border-collapse: collapse;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
     border-radius: 1rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
     overflow: hidden;
-}   
+}
 
-#tabla-apuestas thead {
+/* Cabecera clickable */
+.jornada-header {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 600;
     background-color: #4CAF50;
     color: white;
-}   
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+}
 
-#tabla-apuestas th,
-#tabla-apuestas td {
+.jornada-header:hover {
+    background-color: #45a049;
+}
+
+/* Tabla dentro de la jornada */
+.tabla-jornada {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabla-jornada thead {
+    background-color: #e6ffe9;
+    color: #333;
+    font-weight: 600;
+}
+
+.tabla-jornada th,
+.tabla-jornada td {
     padding: 0.75rem 1rem;
     text-align: center;
     border: 1px solid #e0e0e0;
     font-size: 1rem;
-}   
+}
 
-#tabla-apuestas tbody tr:nth-child(even) {
+.tabla-jornada tbody tr:nth-child(even) {
     background-color: #f2fdf5;
-}   
+}
 
-#tabla-apuestas tbody tr:hover {
+.tabla-jornada tbody tr:hover {
     background-color: #e6ffe9;
     transition: background 0.2s ease-in-out;
-}   
+}
 
+/* Responsive */
 @media screen and (max-width: 768px) {
-    #tabla-apuestas {
-    font-size: 0.875rem;
+    .tabla-jornada {
+        font-size: 0.875rem;
     }
 
-    #tabla-apuestas th,
-    #tabla-apuestas td {
-    padding: 0.5rem;
+    .tabla-jornada th,
+    .tabla-jornada td {
+        padding: 0.5rem;
     }
 
     .header h1 {
-    font-size: 1.2rem;
+        font-size: 1.2rem;
     }
 
     .header-button {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .jornada-header {
+        font-size: 1rem;
+        padding: 0.8rem 1rem;
     }
 }
