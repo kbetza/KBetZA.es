@@ -23,7 +23,10 @@ CASINO
 
 
 
+	HACER EL CUADRADO DEL HISTORICO DE CUOTAS
+	
+	IMAGEN DE CARGA
 
+	JORNADAS EN CURSO
 
-
-	hacer paina web responsive 
+	hacer paGina web responsive 
