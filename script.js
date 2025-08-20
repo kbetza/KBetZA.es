@@ -71,8 +71,9 @@ if (tablaContainer && loadingContainer && tablaBody)
   fetch(apiUrl)
     .then(response => response.json())
     .then(data => {
-      // Ordena por aciertos descendente
-      data.sort((a, b) => b.Aciertos - a.Aciertos);
+
+      data.sort((a, b) => parseFloat(b["Puntos ganados"]) - parseFloat(a["Puntos ganados"]));
+
 
       const total = data.length;
 
@@ -91,7 +92,12 @@ if (tablaContainer && loadingContainer && tablaBody)
 
         ["Jugador","Puntos ganados", "Aciertos", "Apuestas realizadas"].forEach(key => {
           const td = document.createElement('td');
-          td.textContent = row[key];
+          if (key === "Puntos ganados" && !isNaN(row[key])) {
+            td.textContent = parseFloat(row[key]).toFixed(2);
+          } else {
+            td.textContent = row[key];
+          }
+
           tr.appendChild(td);
         });
 
@@ -388,6 +394,7 @@ document.getElementById('enviar-apuestas').addEventListener('click', () => {
     body: JSON.stringify(datosEnviar)
   })
     .then(() => {
+      // window.location.href = 'lobby.html';
       alert("¡Apuestas enviadas correctamente!");
     
     })

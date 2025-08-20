@@ -1,18 +1,9 @@
-CLASIFICACION
-
-	se permite ver la clasificación desde el botón clasificación del lobby
-
-	la clasificación muestra la información almacenada en un drive
-
-	faltaría un método que desde bet-prognostics volcase periódicamente los aciertos y fallos en la tabla clasificación
 
 
 MIS APUESTAS
 
-	faltaría realizar un control más exigente para que una persona realice una única apuesta
-	
-	faltaría traernos de futbol-org la clasificación de la liga para otorgar los puntos segun la posicion de cada equipo
-	
+		BLOQUEAR BOTON SI HAS HECHO APUESTA Y SI YA HA EMPEZADO EL PRIMER partidos
+		Y PARSEAR LAS CUOTAS  PARA QUE SEAN CON ,
 
 
 CANJEAR PUNTOS
@@ -30,11 +21,9 @@ CASINO
 
 	meter tiradas diarias gratuitas en ambas (créditos de apuesta)
 
-HACER UN GOOGLE APPS SCRIPT que muestre en un calendario todos los partidos
 
 
 
 
-URL DE APPS SCRIPT CLASIFIACION DE LA LIGA
 
-https://script.google.com/macros/s/AKfycbyTxXtNASVi5Gmf9dstPVtDVTemZwE__DumgG08ADdne2IsjDAkD3Hq1OzqS0QBHv3o/exec
+	hacer paina web responsive 
