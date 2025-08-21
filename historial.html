@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mis Apuestas</title>
   <link rel="stylesheet" href="styles/historial.css" />
+
 </head>
 <body>
   <header class="header">
@@ -18,9 +19,13 @@
     </div>
   </header>
 
-<main id="contenedor-jornadas">
-  <!-- Aquí se rellenarán las jornadas -->
-</main>
+  <main id="contenedor-jornadas">
+    <!-- Aquí se rellenarán las jornadas -->
+    <div id="loading-container" class="login-container">
+      <img src="imagenes/loading.gif" alt="Cargando..." style="width: 100px; height: auto;" />
+      <p style="text-align:center;">Cargando datos...</p>
+    </div>
+  </main>
 
 <script>
   function formatearFecha(fechaIso) {
@@ -41,8 +46,7 @@
       return;
     }
 
-    const url = `https://script.google.com/macros/s/AKfycbwERxwlGfYM4a5b699DIcX57SeF-VoS1jyK3GbKIGBs9wBzYNPjv7Fq-Pb8K2KFET0xpA/exec?jugador=${encodeURIComponent(jugador)}`;
-    
+    const url = `https://script.google.com/macros/s/AKfycbxJWdlz2Wz_jCZ4C1vkpAYVawrWXk8g0auaU4EMF9HNxiFkmqD-MPGJF8-zrgz0QuNLvQ/exec?jugador=${encodeURIComponent(jugador)}`;
 
     fetch(url)
       .then(res => res.json())
@@ -64,16 +68,24 @@
         contenedor.innerHTML = "";
 
         Object.keys(jornadas).forEach(jornada => {
-          // Crear contenedor de jornada
           const divJornada = document.createElement("div");
           divJornada.classList.add("jornada-box");
 
-          // Botón/cabecera
+          // Cabecera de la jornada
           const cabecera = document.createElement("button");
           cabecera.textContent = `Jornada ${jornada}`;
           cabecera.classList.add("jornada-header");
 
-          // Contenedor de apuestas oculto por defecto
+          // --- Caja resumen ---
+          const datosResumen = jornadas[jornada][0]; // tomo el primero, todos tienen mismos datos
+          const resumen = document.createElement("div");
+          resumen.classList.add("jornada-resumen");
+          resumen.innerHTML = `
+            <div><strong>Partidos acertados:</strong> ${datosResumen.acierto_puntos || 0}</div>
+            <div><strong>Sumatorio de cuotas:</strong> ${datosResumen.cuota_puntos ? parseFloat(datosResumen.cuota_puntos).toFixed(2) : '0.00'}</div>
+            <div><strong>Puntos obtenidos:</strong> ${datosResumen.resultado_puntos ? parseFloat(datosResumen.resultado_puntos).toFixed(2) : '0.00'}</div>
+          `;
+          // --- Tabla de apuestas ---
           const tabla = document.createElement("table");
           tabla.classList.add("tabla-jornada");
           tabla.innerHTML = `
@@ -108,13 +120,19 @@
             tbody.appendChild(fila);
           });
 
-          tabla.style.display = "none"; // Ocultar al inicio
+          // Ocultar al inicio
+          resumen.style.display = "none";
+          tabla.style.display = "none";
 
+          // Toggle
           cabecera.addEventListener("click", () => {
-            tabla.style.display = tabla.style.display === "none" ? "table" : "none";
+            const visible = tabla.style.display === "none";
+            tabla.style.display = visible ? "table" : "none";
+            resumen.style.display = visible ? "block" : "none";
           });
 
           divJornada.appendChild(cabecera);
+          divJornada.appendChild(resumen);
           divJornada.appendChild(tabla);
           contenedor.appendChild(divJornada);
         });
@@ -124,6 +142,6 @@
       });
   });
 </script>
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

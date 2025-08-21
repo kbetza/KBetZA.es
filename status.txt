@@ -1,7 +1,4 @@
-
-
 MIS APUESTAS
-
 		BLOQUEAR BOTON SI HAS HECHO APUESTA Y SI YA HA EMPEZADO EL PRIMER partidos
 		Y PARSEAR LAS CUOTAS  PARA QUE SEAN CON ,
 
@@ -21,12 +18,7 @@ CASINO
 
 	meter tiradas diarias gratuitas en ambas (créditos de apuesta)
 
+JORNADAS EN CURSO
 
+hacer paGina web responsive 
 
-	HACER EL CUADRADO DEL HISTORICO DE CUOTAS
-	
-	IMAGEN DE CARGA
-
-	JORNADAS EN CURSO
-
-	hacer paGina web responsive 

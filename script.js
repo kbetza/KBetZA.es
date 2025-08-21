@@ -394,7 +394,7 @@ document.getElementById('enviar-apuestas').addEventListener('click', () => {
     body: JSON.stringify(datosEnviar)
   })
     .then(() => {
-      // window.location.href = 'lobby.html';
+      window.location.href = 'lobby.html';
       alert("¡Apuestas enviadas correctamente!");
     
     })
