@@ -112,8 +112,6 @@
                 <th>Equipo Local</th>
                 <th>Equipo Visitante</th>
                 <th>Pronóstico</th>
-                <th>Día</th>
-                <th>Hora</th>
                 <th>Cuota</th>
               </tr>
             </thead>
@@ -127,8 +125,6 @@
               <td>${apuesta.equipo_Local ?? ''}</td>
               <td>${apuesta.equipo_Visitante ?? ''}</td>
               <td>${apuesta.pronostico ?? ''}</td>
-              <td>${apuesta.dia ? formatearFecha(apuesta.dia) : ''}</td>
-              <td>${apuesta.hora ? formatearHora(apuesta.hora) : ''}</td>
               <td>${apuesta.cuota ?? ''}</td>
             `;
             tbody.appendChild(fila);

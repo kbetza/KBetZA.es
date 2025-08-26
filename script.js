@@ -1,5 +1,6 @@
 // Script para login.html
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () 
+{
   const loginForm = document.getElementById('login-form');
 
   if (loginForm) {
@@ -10,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const contrasena = document.getElementById('contrasena').value.trim();
       const errorMessage = document.getElementById('error-message');
 
+      // Limpia mensajes anteriores
       errorMessage.innerText = '';
       try {
         const response = await fetch('https://script.google.com/macros/s/AKfycbx4JvahQC0U2qzE1K5hnCxsbTdn_6v8ctxEweBK-h9O77afi_tT6cONU1kX_zTKqq579g/exec', {
@@ -43,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (usuario) {
       nombreUsuario.textContent = usuario;
     } else {
+      // Redirige si no hay usuario
       window.location.href = 'index.html';
     }
   }
@@ -54,58 +57,130 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // ###########################################################################################################
-  // CLASIFICACION
-  const tablaContainer = document.getElementById('tabla-container');
-  const loadingContainer = document.getElementById('loading-container');
-  const tablaBody = document.getElementById('bodyRows');
 
-  if (tablaContainer && loadingContainer && tablaBody) {
-    const apiUrl = 'https://script.google.com/macros/s/AKfycbyNi3iEK0-l8wwAG3snYs1EMT__EaI1T9UeRR07G_m3Je4DiJfYc0ioubEgi2iyvsjAkQ/exec';
+  
+// Script para clasificacion.html con loader y posición
+const tablaContainer = document.getElementById('tabla-container');
+const loadingContainer = document.getElementById('loading-container');
+const tablaBody = document.getElementById('bodyRows');
 
-    fetch(apiUrl)
-      .then(response => response.json())
-      .then(data => {
-        data.sort((a, b) => parseFloat(b["Puntos ganados"]) - parseFloat(a["Puntos ganados"]));
+if (tablaContainer && loadingContainer && tablaBody) 
+  {
+  const apiUrl = 'https://script.google.com/macros/s/AKfycbyNi3iEK0-l8wwAG3snYs1EMT__EaI1T9UeRR07G_m3Je4DiJfYc0ioubEgi2iyvsjAkQ/exec';
 
-        const total = data.length;
+  fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
 
-        data.forEach((row, index) => {
-          const tr = document.createElement('tr');
+      data.sort((a, b) => parseFloat(b["Puntos ganados"]) - parseFloat(a["Puntos ganados"]));
 
-          if (index === 0) tr.classList.add('fila-oro');
-          else if (index === 1) tr.classList.add('fila-plata');
-          else if (index === 2) tr.classList.add('fila-bronce');
-          else if (index >= total - 3) tr.classList.add('fila-ultima');
-          else tr.classList.add('fila-azul');
 
-          const tdPosicion = document.createElement('td');
-          tdPosicion.textContent = index + 1;
-          tr.appendChild(tdPosicion);
+      const total = data.length;
 
-          ["Jugador", "Puntos ganados", "Aciertos", "Apuestas realizadas"].forEach(key => {
-            const td = document.createElement('td');
-            if (key === "Puntos ganados" && !isNaN(row[key])) {
-              td.textContent = parseFloat(row[key]).toFixed(2);
-            } else {
-              td.textContent = row[key];
-            }
-            tr.appendChild(td);
-          });
+      data.forEach((row, index) => {
+        const tr = document.createElement('tr');
 
-          tablaBody.appendChild(tr);
+        if (index === 0) tr.classList.add('fila-oro');
+        else if (index === 1) tr.classList.add('fila-plata');
+        else if (index === 2) tr.classList.add('fila-bronce');
+        else if (index >= total - 3) tr.classList.add('fila-ultima');
+        else tr.classList.add('fila-azul');
+
+        const tdPosicion = document.createElement('td');
+        tdPosicion.textContent = index + 1;
+        tr.appendChild(tdPosicion);
+
+        ["Jugador","Puntos ganados", "Aciertos", "Apuestas realizadas"].forEach(key => {
+          const td = document.createElement('td');
+          if (key === "Puntos ganados" && !isNaN(row[key])) {
+            td.textContent = parseFloat(row[key]).toFixed(2);
+          } else {
+            td.textContent = row[key];
+          }
+
+          tr.appendChild(td);
         });
 
-        loadingContainer.style.display = 'none';
-        tablaContainer.style.display = 'block';
-      })
-      .catch(error => {
-        console.error('Error cargando datos:', error);
-        loadingContainer.innerHTML = "<p style='color:red;'>Error cargando la clasificación.</p>";
+        tablaBody.appendChild(tr);
       });
+
+
+      // Oculta el loader y muestra la tabla
+      loadingContainer.style.display = 'none';
+      tablaContainer.style.display = 'block';
+    })
+    .catch(error => {
+      console.error('Error cargando datos:', error);
+      loadingContainer.innerHTML = "<p style='color:red;'>Error cargando la clasificación.</p>";
+    });
   }
 
-  // ###########################################################################################################
+const tablaContainerLiga = document.getElementById('tabla-containerLiga');
+if (tablaContainerLiga && loadingContainer && tablaBody) 
+  {
+  const apiUrl = 'https://script.google.com/macros/s/AKfycbyfXqPoVpNzDwit9cVH0o_1E60fGL5B5Bx_dt58mw6tRg4jG3_UnJOJaOL2xFJCCcwA/exec';
+
+  fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+      // Ordena por aciertos descendente
+      data.sort((a, b) => b.Aciertos - a.Aciertos);
+
+      const total = data.length;
+
+      data.forEach((row, index) => {
+        const tr = document.createElement('tr');
+
+        if (index === 0) tr.classList.add('fila-oro');
+        else if (index === 1) tr.classList.add('fila-plata');
+        else if (index === 2) tr.classList.add('fila-bronce');
+        else if (index >= total - 3) tr.classList.add('fila-ultima');
+        else tr.classList.add('fila-azul');
+
+        const tdPosicion = document.createElement('td');
+        tdPosicion.textContent = index + 1;
+        tr.appendChild(tdPosicion);
+        ["Equipo", "PJ", "PG", "PE", "PP", "GF", "GC", "DG", "Pts"].forEach(key => {
+          const td = document.createElement('td');
+
+          if (key === "Equipo") {
+            td.style.textAlign = 'left'; 
+            const imagen = document.createElement('img');
+            const id = row["id_equipo"];
+            imagen.src = `logos/${id}.png`;
+            imagen.title = row["Equipo"];
+            imagen.alt = row["Equipo"];
+            imagen.style.height = '40px';
+            imagen.style.objectFit = 'contain';
+            imagen.style.marginRight = '8px';
+            imagen.style.verticalAlign = 'middle';
+
+            const nombreEquipo = document.createElement('span');
+            nombreEquipo.textContent = row["Equipo"];
+            nombreEquipo.style.verticalAlign = 'middle';
+
+            td.appendChild(imagen);
+            td.appendChild(nombreEquipo);
+          } else {
+            td.textContent = row[key];
+          }
+
+          tr.appendChild(td);
+        });
+
+
+        tablaBody.appendChild(tr);
+      });
+      // Oculta el loader y muestra la tabla
+      loadingContainer.style.display = 'none';
+      tablaContainerLiga.style.display = 'block';
+    })
+    .catch(error => {
+      console.error('Error cargando datos:', error);
+      loadingContainer.innerHTML = "<p style='color:red;'>Error cargando la clasificación.</p>";
+    });
+  }
+ // ###########################################################################################################
   // APUESTAS
   const tablaApuestas = document.getElementById('tabla-apuestas');
   const tablaCuerpo = document.getElementById('bodyRows');
@@ -222,8 +297,12 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
-// #####################################################################################################################################
-// ENVIAR APUESTAS
+
+// ###############################################################################################################################
+
+// ###############################################################################################################################
+
+ // Script para enviar apuestas
 document.getElementById('enviar-apuestas').addEventListener('click', () => {
   const filas = document.querySelectorAll('#bodyRows tr');
   const datosEnviar = [];
@@ -244,22 +323,28 @@ document.getElementById('enviar-apuestas').addEventListener('click', () => {
       }
     });
 
+
     if (!pronostico) {
-      apuestasIncompletas = true;
+      apuestasIncompletas = true; // Se encontró una fila sin apuesta
     } else {
+      const idLocal = fila.querySelector('.id-local').textContent.trim();
+      const idVisitante = fila.querySelector('.id-visitante').textContent.trim();
+      const idpartido = fila.querySelector('.id-partido').textContent.trim(); 
       const nombreLocal = fila.querySelector('.nombre-local').textContent.trim();
       const nombreVisitante = fila.querySelector('.nombre-visitante').textContent.trim();
-      const nombreUsuario = localStorage.getItem('usuario');
+      console.log(nombreLocal, nombreVisitante);
+      const nombreUsuario = document.getElementById('nombre-usuario').textContent;
       const jornada = fila.querySelector('.jornada').textContent.trim();
-
+      jornada.split(' - ')[1]; // Extrae el número de jornada
       datosEnviar.push({
         jugador: nombreUsuario,
         jornada: jornada,
+        idpartido: idpartido,
         equipo_Local: nombreLocal,
         equipo_Visitante: nombreVisitante,
         pronostico: pronostico,
         acierto: "",
-        dia: fechaDia,
+        dia: fechaDia, 
         hora: fechaHora,
         cuota: cuotaSeleccionada
       });
@@ -282,11 +367,18 @@ document.getElementById('enviar-apuestas').addEventListener('click', () => {
     body: JSON.stringify(datosEnviar)
   })
     .then(() => {
-      alert("¡Apuestas enviadas correctamente!");
       window.location.href = 'lobby.html';
+      alert("¡Apuestas enviadas correctamente!");
+    
     })
     .catch(error => {
       console.error("Error al enviar los datos:", error);
       alert("Error al enviar las apuestas. Inténtalo más tarde.");
     });
 });
+
+// #####################################################################################################################################
+
+
+
+

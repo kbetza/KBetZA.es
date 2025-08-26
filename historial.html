@@ -127,8 +127,6 @@
                 <th>Equipo Visitante</th>
                 <th>Pronóstico</th>
                 <th>Acierto</th>
-                <th>Día</th>
-                <th>Hora</th>
                 <th>Cuota</th>
                 <th>Resultado</th>
               </tr>
@@ -148,8 +146,6 @@
               <td>${apuesta.equipo_Visitante ?? ''}</td>
               <td>${apuesta.pronostico ?? ''}</td>
               <td>${acierto}</td>
-              <td>${apuesta.dia ? formatearFecha(apuesta.dia) : ''}</td>
-              <td>${apuesta.hora ? formatearHora(apuesta.hora) : ''}</td>
               <td>${apuesta.cuota ?? ''}</td>
               <td>${apuesta.resultado ?? ''}</td>
             `;
