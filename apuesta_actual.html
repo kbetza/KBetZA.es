@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mis Apuestas</title>
   <link rel="stylesheet" href="styles/historial.css" />
-
 </head>
 <body>
   <header class="header">
@@ -18,9 +17,7 @@
       <button id="cerrar-sesion" class="header-button">Cerrar sesión</button>
     </div>
   </header>
-
   <main id="contenedor-jornadas">
-    <!-- Aquí se rellenarán las jornadas -->
     <div id="loading-container" class="login-container">
       <img src="imagenes/loading.gif" alt="Cargando..." style="width: 100px; height: auto;" />
       <p style="text-align:center;">Cargando datos...</p>
@@ -52,7 +49,7 @@
       return;
     }
 
-    const url = `https://script.google.com/macros/s/AKfycbxSu-JSjNKIt1KyOV4W04TOeR2HQiWw49vVoVVu8O3c8o4AnIi2ETCFaFffFyfJehZcqg/exec?jugador=${encodeURIComponent(jugador)}`;
+    const url = `https://script.google.com/macros/s/AKfycby9VlBLGtOp-4xMGHmTzNR2VeAvJNJPMgoUubMNZby1BW1chiUzLseRbSn1sajUSnsBjw/exec?jugador=${encodeURIComponent(jugador)}`;
 
     fetch(url)
       .then(res => {
@@ -78,14 +75,12 @@
                 jornada: j,
                 resumen: {
                   acierto_puntos: item.acierto_puntos ?? null,
-                  // convierte coma decimal si viene como string "7,53"
                   cuota_puntos: item.cuota_puntos != null ? parseFloat(String(item.cuota_puntos).replace(',', '.')) : null,
                   resultado_puntos: item.resultado_puntos != null ? parseFloat(String(item.resultado_puntos).replace(',', '.')) : null
                 },
                 partidos: []
               };
             }
-            // push partido (usa las columnas tal cual vengan del histórico)
             byJornada[j].partidos.push(item);
           });
           data = Object.values(byJornada);
@@ -96,27 +91,18 @@
         const contenedor = document.getElementById("contenedor-jornadas");
         contenedor.innerHTML = "";
 
-        if (!data.length) {
-          contenedor.innerHTML = `<p style="text-align:center">No hay datos para <strong>${jugador}</strong>.</p>`;
-          return;
-        }
-
         data.forEach(jornadaData => {
           const divJornada = document.createElement("div");
           divJornada.classList.add("jornada-box");
 
-          const cabecera = document.createElement("button");
-          cabecera.textContent = `Jornada ${jornadaData.jornada}`;
-          cabecera.classList.add("jornada-header");
+          // Reemplazamos el botón por un título
+          const titulo = document.createElement("h2");
+          titulo.textContent = `Jornada ${jornadaData.jornada}`;
+          titulo.classList.add("jornada-titulo");
 
           const r = jornadaData.resumen || {};
           const resumen = document.createElement("div");
           resumen.classList.add("jornada-resumen");
-          resumen.innerHTML = `
-            <div><strong>Partidos acertados:</strong> ${r.acierto_puntos ?? 0}</div>
-            <div><strong>Sumatorio de cuotas:</strong> ${formatNum(r.cuota_puntos)}</div>
-            <div><strong>Puntos obtenidos:</strong> ${formatNum(r.resultado_puntos)}</div>
-          `;
 
           const tabla = document.createElement("table");
           tabla.classList.add("tabla-jornada");
@@ -126,11 +112,9 @@
                 <th>Equipo Local</th>
                 <th>Equipo Visitante</th>
                 <th>Pronóstico</th>
-                <th>Acierto</th>
                 <th>Día</th>
                 <th>Hora</th>
                 <th>Cuota</th>
-                <th>Resultado</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -139,34 +123,23 @@
 
           (jornadaData.partidos || []).forEach(apuesta => {
             const fila = document.createElement("tr");
-            const acierto =
-              apuesta.acierto === true ? '✅' :
-              apuesta.acierto === false ? '❌' : (apuesta.acierto || '');
-
             fila.innerHTML = `
               <td>${apuesta.equipo_Local ?? ''}</td>
               <td>${apuesta.equipo_Visitante ?? ''}</td>
               <td>${apuesta.pronostico ?? ''}</td>
-              <td>${acierto}</td>
               <td>${apuesta.dia ? formatearFecha(apuesta.dia) : ''}</td>
               <td>${apuesta.hora ? formatearHora(apuesta.hora) : ''}</td>
               <td>${apuesta.cuota ?? ''}</td>
-              <td>${apuesta.resultado ?? ''}</td>
             `;
             tbody.appendChild(fila);
           });
 
-          resumen.style.display = "none";
-          tabla.style.display = "none";
+          // Mostrar siempre el resumen y la tabla (sin ocultar)
+          resumen.style.display = "block";
+          tabla.style.display = "table";
 
-          cabecera.addEventListener("click", () => {
-            const visible = tabla.style.display === "none";
-            tabla.style.display = visible ? "table" : "none";
-            resumen.style.display = visible ? "block" : "none";
-          });
-
-          divJornada.appendChild(cabecera);
-          divJornada.appendChild(resumen);
+          // Agregar los elementos al contenedor de la jornada
+          divJornada.appendChild(titulo);
           divJornada.appendChild(tabla);
           contenedor.appendChild(divJornada);
         });
