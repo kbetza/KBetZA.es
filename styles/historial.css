@@ -148,28 +148,23 @@ main {
   color: #333;
 }
 
-/* Responsive */
-@media screen and (max-width: 768px) {
-    .tabla-jornada {
-        font-size: 0.875rem;
-    }
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .header {
+    height: auto;
+    padding: 0.4rem;
+  }
 
-    .tabla-jornada th,
-    .tabla-jornada td {
-        padding: 0.5rem;
-    }
+  .header img {
+    height: 2rem;
+  }
 
-    .header h1 {
-        font-size: 1.2rem;
-    }
+  .header h1 {
+    font-size: 0.9rem;
+  }
 
-    .header-button {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-    }
-
-    .jornada-header {
-        font-size: 1rem;
-        padding: 0.8rem 1rem;
-    }
+  .header-button {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.5rem;
+  }
 }

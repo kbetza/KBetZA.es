@@ -86,9 +86,23 @@ body {
   transition: background 0.3s;
 }
 
-@media (min-width: 48rem) { /* 768px */
-  .button-grid {
-    max-width: 37.5rem; /* 600px */
-    margin: 0 auto;
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .header {
+    height: auto;
+    padding: 0.4rem;
+  }
+
+  .header img {
+    height: 2rem;
+  }
+
+  .header h1 {
+    font-size: 0.9rem;
+  }
+
+  .header-button {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.5rem;
   }
 }
