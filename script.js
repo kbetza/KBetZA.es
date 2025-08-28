@@ -218,16 +218,16 @@ if (tablaContainerLiga && loadingContainer && tablaBody)
             data.forEach((partido, index) => {
               const tr = document.createElement('tr');
 
-              const tdFecha = document.createElement('td');
-              tdFecha.textContent = new Date(partido.Fecha).toLocaleDateString('es-ES');
-              tr.appendChild(tdFecha);
+              // const tdFecha = document.createElement('td');
+              // tdFecha.textContent = new Date(partido.Fecha).toLocaleDateString('es-ES');
+              // tr.appendChild(tdFecha);
 
-              const tdHora = document.createElement('td');
-              tdHora.textContent = new Date(partido.Hora).toLocaleTimeString('es-ES', {
-                hour: '2-digit',
-                minute: '2-digit'
-              });
-              tr.appendChild(tdHora);
+              // const tdHora = document.createElement('td');
+              // tdHora.textContent = new Date(partido.Hora).toLocaleTimeString('es-ES', {
+              //   hour: '2-digit',
+              //   minute: '2-digit'
+              // });
+              // tr.appendChild(tdHora);
 
               const tdEquipo_Local = document.createElement('td');
               const imgLocal = document.createElement('img');
