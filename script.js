@@ -277,6 +277,26 @@ if (tablaContainerLiga && loadingContainer && tablaBody)
               });
               tr.appendChild(tdApuesta);
 
+              // ID Local (oculto)
+              const tdIDLocal = document.createElement('td');
+              tdIDLocal.textContent = partido.ID_Local;
+              tdIDLocal.style.display = 'none';
+              tdIDLocal.classList.add('id-local');
+              tr.appendChild(tdIDLocal);
+      
+              // ID Visitante (oculto)
+              const tdIDVisitante = document.createElement('td');
+              tdIDVisitante.textContent = partido.ID_Visitante;
+              tdIDVisitante.style.display = 'none';
+              tdIDVisitante.classList.add('id-visitante');
+              tr.appendChild(tdIDVisitante);
+              // ID Partido (oculto)
+              const tdID_partido = document.createElement('td');
+              tdID_partido.textContent = partido.ID_partido;
+              tdID_partido.style.display = 'none';
+              tdID_partido.classList.add('id-partido');
+              tr.appendChild(tdID_partido);
+
               const tdJornada = document.createElement('td');
               tdJornada.textContent = jornadaActual;
               tdJornada.style.display = 'none';
@@ -327,8 +347,8 @@ document.getElementById('enviar-apuestas').addEventListener('click', () => {
     if (!pronostico) {
       apuestasIncompletas = true; // Se encontró una fila sin apuesta
     } else {
-      // const idLocal = fila.querySelector('.id-local').textContent.trim();
-      // const idVisitante = fila.querySelector('.id-visitante').textContent.trim();
+      const idLocal = fila.querySelector('.id-local').textContent.trim();
+      const idVisitante = fila.querySelector('.id-visitante').textContent.trim();
       const idpartido = fila.querySelector('.id-partido').textContent.trim(); 
       const nombreLocal = fila.querySelector('.nombre-local').textContent.trim();
       const nombreVisitante = fila.querySelector('.nombre-visitante').textContent.trim();
