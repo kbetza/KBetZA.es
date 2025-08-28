@@ -144,7 +144,7 @@ if (tablaContainerLiga && loadingContainer && tablaBody)
           const td = document.createElement('td');
 
           if (key === "Equipo") {
-            td.style.textAlign = 'left'; 
+            td.style.textAlign = 'center'; 
             const imagen = document.createElement('img');
             const id = row["id_equipo"];
             imagen.src = `logos/${id}.png`;
@@ -155,12 +155,12 @@ if (tablaContainerLiga && loadingContainer && tablaBody)
             imagen.style.marginRight = '8px';
             imagen.style.verticalAlign = 'middle';
 
-            const nombreEquipo = document.createElement('span');
-            nombreEquipo.textContent = row["Equipo"];
-            nombreEquipo.style.verticalAlign = 'middle';
+            // const nombreEquipo = document.createElement('span');
+            // nombreEquipo.textContent = row["Equipo"];
+            // nombreEquipo.style.verticalAlign = 'middle';
 
             td.appendChild(imagen);
-            td.appendChild(nombreEquipo);
+            // td.appendChild(nombreEquipo);
           } else {
             td.textContent = row[key];
           }
