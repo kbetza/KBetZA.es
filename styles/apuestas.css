@@ -68,13 +68,15 @@ body {
 
 /* Estilos para la sección de tabla de apuestas */
 .tabla-apuestas {
-  width: 90%;
+  width: 100%;
   max-width: 1000px;
   margin-top: 2rem;
   background-color: #ffffffcc;
   padding: 2rem;
   border-radius: 1rem;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  overflow-x: auto; /* evita scroll lateral en pantallas pequeñas */
+  -webkit-overflow-scrolling: touch;
 }
 
 .tabla-apuestas h2 {
@@ -87,7 +89,9 @@ body {
 .apuestas-tabla {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed; /* hace que se adapten las columnas */
   font-size: 1rem;
+  word-wrap: break-word;
 }
 
 .apuestas-tabla thead {
@@ -111,6 +115,32 @@ body {
   transition: background 0.2s;
 }
 
+/* Botones 1X2 en una sola fila horizontal */
+.apuestas-tabla .botones-apuesta {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.apuestas-tabla .botones-apuesta button {
+  flex: 1;
+  min-width: 2.5rem;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.9rem;
+  border-radius: 0.4rem;
+  border: none;
+  cursor: pointer;
+}
+
+/* Colores botones */
+.boton-1 { background-color: #4CAF50; color: #fff; }
+.boton-x { background-color: #ffc107; color: #333; }
+.boton-2 { background-color: #f44336; color: #fff; }
+
+.boton-1:hover { background-color: #45a049; }
+.boton-x:hover { background-color: #e0a800; }
+.boton-2:hover { background-color: #d32f2f; }
+
 #enviar-apuestas {
   margin: 2rem auto;
   display: block;
@@ -127,8 +157,6 @@ body {
 #enviar-apuestas:hover {
   background-color: #45a049;
 }
-/* Estilos para el footer */
-
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
@@ -148,5 +176,24 @@ body {
   .header-button {
     font-size: 0.75rem;
     padding: 0.3rem 0.5rem;
+  }
+
+  .tabla-apuestas {
+    padding: 1rem;
+  }
+
+  .apuestas-tabla th,
+  .apuestas-tabla td {
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .apuestas-tabla .botones-apuesta {
+    gap: 0.3rem;
+  }
+
+  .apuestas-tabla .botones-apuesta button {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.4rem;
   }
 }
