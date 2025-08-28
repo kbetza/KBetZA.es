@@ -327,8 +327,8 @@ document.getElementById('enviar-apuestas').addEventListener('click', () => {
     if (!pronostico) {
       apuestasIncompletas = true; // Se encontró una fila sin apuesta
     } else {
-      const idLocal = fila.querySelector('.id-local').textContent.trim();
-      const idVisitante = fila.querySelector('.id-visitante').textContent.trim();
+      // const idLocal = fila.querySelector('.id-local').textContent.trim();
+      // const idVisitante = fila.querySelector('.id-visitante').textContent.trim();
       const idpartido = fila.querySelector('.id-partido').textContent.trim(); 
       const nombreLocal = fila.querySelector('.nombre-local').textContent.trim();
       const nombreVisitante = fila.querySelector('.nombre-visitante').textContent.trim();
