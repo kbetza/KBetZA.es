@@ -168,17 +168,24 @@ main {
     padding: 0.3rem 0.5rem;
   }
 
-    .tabla-jornada {
-        font-size: 0.875rem;
-    }
+  /* Ajuste tabla sin scroll */
+  .tabla-jornada {
+    width: 100%;
+    font-size: 0.75rem;      /* fuente más pequeña */
+    table-layout: fixed;     /* fuerza ajuste proporcional */
+    word-wrap: break-word;   /* corta palabras largas */
+  }
 
-    .tabla-jornada th,
-    .tabla-jornada td {
-        padding: 0.5rem;
-    }
+  .tabla-jornada th,
+  .tabla-jornada td {
+    padding: 0.3rem;
+    white-space: normal;     /* permite salto de línea */
+    font-size: 0.75rem;
+  }
 
-    .jornada-header {
-        font-size: 1rem;
-        padding: 0.8rem 1rem;
-    }
+  .jornada-header {
+    font-size: 1rem;
+    padding: 0.6rem 0.8rem;
+  }
 }
+
