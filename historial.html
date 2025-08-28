@@ -123,12 +123,11 @@
           tabla.innerHTML = `
             <thead>
               <tr>
-                <th>Equipo Local</th>
-                <th>Equipo Visitante</th>
+                <th>Local</th>
+                <th>Visitante</th>
                 <th>Pronóstico</th>
-                <th>Acierto</th>
                 <th>Cuota</th>
-                <th>Resultado</th>
+                <th>Acierto</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -145,9 +144,8 @@
               <td>${apuesta.equipo_Local ?? ''}</td>
               <td>${apuesta.equipo_Visitante ?? ''}</td>
               <td>${apuesta.pronostico ?? ''}</td>
-              <td>${acierto}</td>
               <td>${apuesta.cuota ?? ''}</td>
-              <td>${apuesta.resultado ?? ''}</td>
+              <td>${acierto}</td>
             `;
             tbody.appendChild(fila);
           });
