@@ -339,7 +339,7 @@ document.getElementById('enviar-apuestas').addEventListener('click', () => {
     radios.forEach(radio => {
       if (radio.checked) {
         pronostico = radio.value;
-        cuotaSeleccionada = radio.getAttribute('data-cuota');
+        cuotaSeleccionada = radio.getAttribute('data-cuota').replace('.', ',');
       }
     });
 
