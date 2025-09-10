@@ -266,13 +266,19 @@ if (tablaContainerLiga && loadingContainer && tablaBody)
                 radio.type = 'radio';
                 radio.name = `apuesta-${index}`;
                 radio.value = opcion;
-                radio.setAttribute('data-cuota',
-                  opcion === '1' ? partido.Cuota_Local :
+                const cuota = opcion === '1' ? partido.Cuota_Local :
                     opcion === 'X' ? partido.Cuota_Empate :
                       partido.Cuota_Visitante
-                );
+                radio.setAttribute('data-cuota', cuota);
+
+                const cuotaSpan = document.createElement('div');
+                cuotaSpan.textContent = `${cuota}`;
+                cuotaSpan.style.fontSize = '0.75rem';
+                cuotaSpan.style.color = '#666';
+
                 label.appendChild(radio);
                 label.appendChild(document.createTextNode(opcion));
+                label.appendChild(cuotaSpan); 
                 tdApuesta.appendChild(label);
               });
               tr.appendChild(tdApuesta);
