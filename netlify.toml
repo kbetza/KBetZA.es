@@ -1,0 +1,114 @@
+# Netlify Configuration
+# https://docs.netlify.com/configure-builds/file-based-configuration/
+
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+# Environment variables (set in Netlify UI, not here)
+# SUPABASE_URL = "your-supabase-url"
+# SUPABASE_ANON_KEY = "your-supabase-anon-key"
+
+# Functions configuration
+[functions]
+  node_bundler = "esbuild"
+  directory = "netlify/functions"
+
+[functions."*"]
+  external_node_modules = ["bcryptjs", "@supabase/supabase-js"]
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.netlify.app https://*.supabase.co"
+
+# ═══════════════════════════════════════════════════════════════
+# NO CACHE - Forzar recarga siempre (útil para desarrollo)
+# ═══════════════════════════════════════════════════════════════
+
+[[headers]]
+  for = "/styles/*"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
+
+[[headers]]
+  for = "/imagenes/*"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
+
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
+
+# API endpoints
+[[redirects]]
+  from = "/api/login"
+  to = "/.netlify/functions/login"
+  status = 200
+
+[[redirects]]
+  from = "/api/matches"
+  to = "/.netlify/functions/matches"
+  status = 200
+
+[[redirects]]
+  from = "/api/predictions"
+  to = "/.netlify/functions/predictions"
+  status = 200
+
+[[redirects]]
+  from = "/api/standings/league"
+  to = "/.netlify/functions/standings-league"
+  status = 200
+
+[[redirects]]
+  from = "/api/standings/players"
+  to = "/.netlify/functions/standings-players"
+  status = 200
+
+[[redirects]]
+  from = "/api/history"
+  to = "/.netlify/functions/history"
+  status = 200
+
+[[redirects]]
+  from = "/api/check-bet"
+  to = "/.netlify/functions/check-bet"
+  status = 200
+
+[[redirects]]
+  from = "/api/current-bet"
+  to = "/.netlify/functions/current-bet"
+  status = 200
+
+# SPA fallback
+[[redirects]]
+  from = "/login"
+  to = "/index.html"
+  status = 200
