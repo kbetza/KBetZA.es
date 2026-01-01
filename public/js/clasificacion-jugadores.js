@@ -4,6 +4,7 @@
  * ============================================
  * Carga y muestra la clasificación con podio destacado
  * ACTUALIZADO: Nuevo diseño de filas con nombre arriba y stats abajo a la derecha
+ * ACTUALIZADO: Puntos visibles en móvil para jugadores 4+
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -120,7 +121,7 @@ async function loadClasificacionJugadores() {
 /**
  * Creates a player row element for players 4th and beyond
  * NUEVO DISEÑO:
- * - Fila superior: posición + avatar + nombre (alineado a izquierda)
+ * - Fila superior: posición + avatar + nombre + puntos (alineado a izquierda, puntos a la derecha)
  * - Debajo: stats alineados a la derecha
  */
 function createPlayerRow(position, name, points, hits, bets) {
@@ -132,6 +133,7 @@ function createPlayerRow(position, name, points, hits, bets) {
       <div class="player-position">${position}</div>
       <div class="player-avatar-small">${name.charAt(0).toUpperCase()}</div>
       <p class="player-name">${escapeHtml(name)}</p>
+      <div class="player-points-badge">${formatPoints(points)}<span class="points-label">pts</span></div>
     </div>
     <div class="player-stats-right">
       <div class="stat-line">Aciertos:<span class="stat-number">${hits}</span></div>

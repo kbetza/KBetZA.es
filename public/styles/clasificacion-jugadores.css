@@ -1,5 +1,6 @@
 /* ============================================
    CLASIFICACIÓN JUGADORES - PREMIUM PODIUM DESIGN
+   ACTUALIZADO: Puntos visibles en móvil para jugadores 4+
    ============================================ */
 
 /* Page Setup */
@@ -402,7 +403,7 @@
 }
 
 /* ============================================
-   PLAYER ROW - NUEVO DISEÑO VERTICAL
+   PLAYER ROW - DISEÑO CON PUNTOS VISIBLES
    ============================================ */
 
 .player-row {
@@ -445,7 +446,7 @@
   }
 }
 
-/* Fila superior: posición + avatar + nombre */
+/* Fila superior: posición + avatar + nombre + puntos */
 .player-row-top {
   display: flex;
   align-items: center;
@@ -488,6 +489,35 @@
   color: rgba(255, 255, 255, 0.9);
   margin: 0;
   flex: 1;
+}
+
+/* ============================================
+   BADGE DE PUNTOS - NUEVO ELEMENTO
+   ============================================ */
+
+.player-points-badge {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(46, 125, 50, 0.4));
+  border: 1px solid rgba(76, 175, 80, 0.5);
+  border-radius: 20px;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #4CAF50;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2);
+}
+
+.player-points-badge .points-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: rgba(76, 175, 80, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 /* Stats alineados a la derecha */
@@ -664,6 +694,16 @@
   .player-stats-right .stat-line {
     font-size: 0.85rem;
   }
+  
+  /* Puntos badge en tablet */
+  .player-points-badge {
+    padding: 5px 10px;
+    font-size: 0.9rem;
+  }
+  
+  .player-points-badge .points-label {
+    font-size: 0.6rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -733,6 +773,7 @@
   .player-row-top {
     gap: 0.5rem;
     margin-bottom: 0.5rem;
+    flex-wrap: wrap;
   }
   
   .player-position {
@@ -749,9 +790,55 @@
   
   .player-name {
     font-size: 0.95rem;
+    flex: 1;
+    min-width: 0;
+  }
+  
+  /* Puntos badge en móvil - más compacto pero visible */
+  .player-points-badge {
+    padding: 4px 8px;
+    font-size: 0.85rem;
+    gap: 3px;
+    margin-left: auto;
+  }
+  
+  .player-points-badge .points-label {
+    font-size: 0.55rem;
   }
   
   .player-stats-right .stat-line {
     font-size: 0.8rem;
+  }
+}
+
+/* Pantallas muy pequeñas */
+@media (max-width: 360px) {
+  .player-row-top {
+    gap: 0.4rem;
+  }
+  
+  .player-position {
+    width: 24px;
+    height: 24px;
+    font-size: 0.7rem;
+  }
+  
+  .player-avatar-small {
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+  }
+  
+  .player-name {
+    font-size: 0.85rem;
+  }
+  
+  .player-points-badge {
+    padding: 3px 6px;
+    font-size: 0.75rem;
+  }
+  
+  .player-points-badge .points-label {
+    font-size: 0.5rem;
   }
 }
