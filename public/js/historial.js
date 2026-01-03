@@ -30,7 +30,7 @@ function getLogoPath(teamId) {
  */
 const TEAM_IDS = {
   'FC Barcelona': 81,
-  'Barcelona': 81,
+  // 'Barcelona': 81,
   'Real Madrid CF': 86,
   'Real Madrid': 86,
   'Atlético de Madrid': 78,
