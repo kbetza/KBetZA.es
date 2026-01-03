@@ -3,6 +3,7 @@
  * APUESTA-ACTUAL.JS - MOBILE OPTIMIZED
  * ============================================
  * Con logos de equipos y mejor responsive
+ * ACTUALIZADO: Partidos ordenados por fecha y hora
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -22,6 +23,57 @@ function getLogoPath(teamId) {
   const id = parseInt(teamId, 10);
   if (isNaN(id)) return null;
   return `/imagenes/${id}.png`;
+}
+
+/**
+ * Ordena las apuestas por fecha y hora
+ */
+function ordenarApuestasPorFechaHora(apuestas) {
+  return apuestas.sort((a, b) => {
+    // Función auxiliar para convertir fecha a comparable
+    const parseFecha = (fecha) => {
+      if (!fecha) return '9999-99-99';
+      // Si es formato D/M/YYYY o DD/MM/YYYY
+      if (typeof fecha === 'string' && fecha.includes('/')) {
+        const parts = fecha.split('/');
+        if (parts.length === 3) {
+          const day = parts[0].padStart(2, '0');
+          const month = parts[1].padStart(2, '0');
+          const year = parts[2];
+          return `${year}-${month}-${day}`;
+        }
+      }
+      // Si es formato YYYY-MM-DD
+      if (typeof fecha === 'string' && fecha.includes('-')) {
+        return fecha.substring(0, 10);
+      }
+      return fecha;
+    };
+
+    // Función auxiliar para convertir hora a comparable
+    const parseHora = (hora) => {
+      if (!hora) return '99:99';
+      if (typeof hora === 'string') {
+        const match = hora.match(/(\d{1,2}):(\d{2})/);
+        if (match) {
+          return `${match[1].padStart(2, '0')}:${match[2]}`;
+        }
+      }
+      return hora;
+    };
+
+    const fechaA = parseFecha(a.fecha);
+    const fechaB = parseFecha(b.fecha);
+    
+    if (fechaA !== fechaB) {
+      return fechaA.localeCompare(fechaB);
+    }
+    
+    const horaA = parseHora(a.hora);
+    const horaB = parseHora(b.hora);
+    
+    return horaA.localeCompare(horaB);
+  });
 }
 
 async function loadApuestaActual() {
@@ -61,7 +113,12 @@ async function loadApuestaActual() {
       return;
     }
     
-    const apuestas = data.bets;
+    // Ordenar apuestas por fecha y hora (respaldo por si el backend no las ordena)
+    let apuestas = data.bets;
+    if (apuestas[0] && (apuestas[0].fecha || apuestas[0].hora)) {
+      apuestas = ordenarApuestasPorFechaHora(apuestas);
+    }
+    
     const jornadaActual = data.matchday;
     
     if (numJornada) {
