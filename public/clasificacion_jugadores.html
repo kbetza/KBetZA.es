@@ -35,7 +35,23 @@
   <main class="main-content">
     <div class="page-header">
       <h1 class="page-title">🏆 Ranking de Jugadores</h1>
-      <p class="page-subtitle">Temporada 2024-25</p>
+      <p class="page-subtitle" id="filter-subtitle">Temporada 2024-25</p>
+    </div>
+    
+    <!-- Filter Buttons -->
+    <div class="filter-buttons-container">
+      <button class="filter-btn active" data-filter="season" id="btn-season">
+        <span class="filter-icon">📅</span>
+        <span class="filter-text">Temporada 2024-25</span>
+      </button>
+      <button class="filter-btn" data-filter="current" id="btn-current">
+        <span class="filter-icon">⚡</span>
+        <span class="filter-text">Última Jornada</span>
+      </button>
+      <button class="filter-btn" data-filter="second-half" id="btn-second-half">
+        <span class="filter-icon">🔄</span>
+        <span class="filter-text">Partidos de Vuelta</span>
+      </button>
     </div>
     
     <!-- Loading State -->

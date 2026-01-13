@@ -61,6 +61,56 @@
   text-transform: uppercase;
 }
 
+/* ============================================
+   FILTER BUTTONS
+   ============================================ */
+
+.filter-buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 30px;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.filter-btn.active {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.3));
+  border-color: rgba(255, 215, 0, 0.5);
+  color: #FFD700;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+}
+
+.filter-btn .filter-icon {
+  font-size: 1rem;
+}
+
+.filter-btn .filter-text {
+  white-space: nowrap;
+}
+
 /* Loading Spinner */
 .clasificacion-jugadores-page .loading-container {
   background: rgba(255, 255, 255, 0.05);
@@ -581,6 +631,20 @@
     font-size: 0.85rem;
   }
   
+  /* Filter buttons responsive - tablet */
+  .filter-buttons-container {
+    gap: 0.5rem;
+  }
+  
+  .filter-btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+  }
+  
+  .filter-btn .filter-icon {
+    font-size: 0.9rem;
+  }
+  
   .podium-container {
     gap: 0.5rem;
   }
@@ -709,6 +773,20 @@
 @media (max-width: 480px) {
   .clasificacion-jugadores-page .page-title {
     font-size: 1.4rem;
+  }
+  
+  /* Filter buttons responsive - mobile */
+  .filter-buttons-container {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0 1.5rem;
+  }
+  
+  .filter-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
   }
   
   .podium-container {
