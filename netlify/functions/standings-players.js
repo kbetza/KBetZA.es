@@ -109,7 +109,8 @@ async function getCurrentMatchdayStandings() {
     .select('estado')
     .eq('jornada', currentJornada);
 
-  const hasFinishedMatches = currentMatches && currentMatches.some(m => m.estado === 'FINISHED');
+  // CORREGIDO: El estado en la BD es 'Match finished', no 'FINISHED'
+  const hasFinishedMatches = currentMatches && currentMatches.some(m => m.estado === 'Match finished');
 
   let targetJornada = currentJornada;
   let description = `Jornada ${matchday}`;
@@ -181,7 +182,7 @@ async function calculateFromCurrentPredictions(matchday, description) {
       };
     }
 
-    // Solo contar si ya tiene resultado
+    // Solo contar si el jugador acertó
     if (pred.acierto === true) {
       playerStats[username].aciertos++;
       playerStats[username].sumaCuotas += parseFloat(pred.cuota) || 0;
