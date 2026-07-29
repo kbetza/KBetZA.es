@@ -1,0 +1,183 @@
+/* ============================================================
+   KBetZA — Sistema de diseño "Estadio de noche"
+   Portado del prototipo + shell responsive (móvil / escritorio)
+   ============================================================ */
+
+:root {
+  --bg: #090D0A;
+  --bg-2: #0C120D;
+  --surface: #141B16;
+  --surface-2: #1A231C;
+  --surface-3: #222E25;
+  --line: rgba(255, 255, 255, 0.07);
+  --line-2: rgba(255, 255, 255, 0.13);
+  --green: #2BE36B;
+  --green-glow: rgba(43, 227, 107, 0.35);
+  --gold: #FFC940;
+  --red: #FF5247;
+  --blue: #58B6FF;
+  --text: #F1F6F1;
+  --muted: #93A096;
+  --muted-2: #5E6B62;
+  --font-ui: 'Saira', system-ui, sans-serif;
+  --font-cond: 'Saira Condensed', 'Saira', system-ui, sans-serif;
+  --r-sm: 10px; --r-md: 16px; --r-lg: 22px; --r-xl: 28px;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --grad-green: linear-gradient(118deg, #2BE36B 0%, #8BEF4E 100%);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background:
+    radial-gradient(circle at 50% -10%, rgba(43,227,107,0.10), transparent 45%),
+    radial-gradient(circle at 50% 120%, rgba(43,227,107,0.05), transparent 45%),
+    #060807;
+  color: var(--text);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+}
+#root { height: 100%; }
+input, button { font-family: inherit; }
+
+/* ---------- Shell responsive ---------- */
+.kb-stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+.kb-frame {
+  position: relative;
+  width: 100%; height: 100%;
+  max-width: 440px;
+  background: var(--bg);
+  overflow: hidden;
+}
+/* En escritorio: marco tipo teléfono, centrado y con borde */
+@media (min-width: 480px) {
+  .kb-frame {
+    height: min(880px, 96vh);
+    border-radius: 30px;
+    border: 1px solid var(--line-2);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  }
+}
+
+/* ---------- App ---------- */
+.kb-app {
+  position: relative; height: 100%; width: 100%;
+  display: flex; flex-direction: column;
+  background: var(--bg); color: var(--text);
+  overflow: hidden;
+}
+.kb-app::before {
+  content: ''; position: absolute; top: -160px; left: 50%; transform: translateX(-50%);
+  width: 460px; height: 360px;
+  background: radial-gradient(ellipse at center, var(--green-glow) 0%, transparent 68%);
+  opacity: 0.5; pointer-events: none; z-index: 0;
+}
+.kb-scroll {
+  position: relative; z-index: 1; flex: 1;
+  overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.kb-scroll::-webkit-scrollbar { display: none; }
+
+/* ---------- Tipografía ---------- */
+.kb-display { font-family: var(--font-cond); font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; line-height: 0.95; }
+.kb-num { font-family: var(--font-cond); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 0.3px; }
+.kb-eyebrow { font-family: var(--font-cond); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-size: 12px; color: var(--green); white-space: nowrap; }
+.kb-eyebrow.blue { color: var(--blue); }
+
+/* ---------- Header ---------- */
+.kb-header {
+  position: relative; z-index: 2;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: calc(env(safe-area-inset-top, 0px) + 22px) 20px 14px; gap: 12px;
+}
+.kb-header-title { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.kb-header-title h1 { font-family: var(--font-cond); font-weight: 800; text-transform: uppercase; font-size: 28px; line-height: 0.95; margin: 0; letter-spacing: 0.4px; white-space: nowrap; }
+
+.kb-icon-btn {
+  flex-shrink: 0; width: 42px; height: 42px; border-radius: 50%;
+  background: var(--surface); border: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text); cursor: pointer; transition: background 0.18s, transform 0.12s;
+}
+.kb-icon-btn:active { transform: scale(0.93); }
+.kb-icon-btn:hover { background: var(--surface-2); }
+
+/* ---------- Wordmark ---------- */
+.kb-wordmark { font-family: var(--font-cond); font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; white-space: nowrap; line-height: 1; }
+.kb-wordmark .kb-k { color: var(--text); }
+.kb-wordmark .kb-bet { color: var(--green); }
+
+/* ---------- Cards / pills ---------- */
+.kb-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); }
+.kb-pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; font-size: 11.5px; font-weight: 600; background: var(--surface-2); border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+.kb-pill.green { color: var(--green); border-color: rgba(43,227,107,0.28); background: rgba(43,227,107,0.1); }
+
+/* ---------- Botones ---------- */
+.kb-btn {
+  font-family: var(--font-cond); font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px;
+  border: none; border-radius: var(--r-md); padding: 15px 20px; font-size: 17px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  transition: transform 0.12s, filter 0.18s, opacity 0.18s;
+  color: #06210F; background: var(--grad-green); width: 100%; white-space: nowrap;
+}
+.kb-btn:active { transform: scale(0.985); }
+.kb-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.kb-btn.ghost { background: var(--surface-2); color: var(--text); border: 1px solid var(--line-2); }
+.kb-btn.ghost:hover { background: var(--surface-3); }
+
+/* ---------- Bottom nav ---------- */
+.kb-nav {
+  position: relative; z-index: 3; flex-shrink: 0;
+  display: grid; grid-template-columns: repeat(5, 1fr); align-items: end;
+  padding: 10px 12px calc(env(safe-area-inset-bottom, 0px) + 16px);
+  background: linear-gradient(180deg, rgba(9,13,10,0) 0%, var(--bg) 32%);
+  border-top: 1px solid var(--line);
+}
+.kb-nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 6px 0; color: var(--muted-2); cursor: pointer; background: none; border: none; transition: color 0.16s; }
+.kb-nav-item .lbl { font-size: 10.5px; font-weight: 600; }
+.kb-nav-item.active { color: var(--green); }
+.kb-nav-fab { position: relative; display: flex; flex-direction: column; align-items: center; gap: 5px; background: none; border: none; cursor: pointer; transform: translateY(-14px); }
+.kb-nav-fab .ring { width: 60px; height: 60px; border-radius: 50%; background: var(--grad-green); display: flex; align-items: center; justify-content: center; color: #06210F; box-shadow: 0 8px 22px rgba(43,227,107,0.4), 0 0 0 6px var(--bg); transition: transform 0.14s; }
+.kb-nav-fab:active .ring { transform: scale(0.92); }
+.kb-nav-fab .lbl { font-family: var(--font-cond); font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; font-size: 11px; color: var(--green); }
+
+/* ---------- Escudo ---------- */
+.kb-team-logo { display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 38% 32%, #ffffff14, #ffffff05); border: 1px solid var(--line); border-radius: 50%; flex-shrink: 0; overflow: hidden; }
+.kb-team-logo img { width: 70%; height: 70%; object-fit: contain; }
+
+/* ---------- Selector de cuotas ---------- */
+.kb-odds { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+.kb-odd { position: relative; border: 1.5px solid var(--line-2); background: var(--surface-2); border-radius: var(--r-sm); padding: 9px 4px 8px; display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; transition: border-color 0.15s; }
+.kb-odd .pick { font-family: var(--font-cond); font-weight: 800; font-size: 16px; color: var(--muted); line-height: 1; }
+.kb-odd .val { font-family: var(--font-cond); font-weight: 700; font-size: 14px; color: var(--text); font-variant-numeric: tabular-nums; }
+.kb-odd:hover { border-color: rgba(43,227,107,0.4); }
+.kb-odd.sel { background: var(--grad-green); border-color: transparent; }
+.kb-odd.sel .pick, .kb-odd.sel .val { color: #06210F; }
+
+/* ---------- Misc ---------- */
+.kb-section-title { font-family: var(--font-cond); font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; font-size: 14px; color: var(--muted); margin: 0; white-space: nowrap; }
+.kb-input { width: 100%; background: var(--surface); border: 1.5px solid var(--line-2); border-radius: var(--r-md); padding: 15px 16px 15px 46px; color: var(--text); font-size: 15px; outline: none; transition: border-color 0.18s, background 0.18s; }
+.kb-input::placeholder { color: var(--muted-2); }
+.kb-input:focus { border-color: var(--green); background: var(--surface-2); }
+.kb-input-wrap { position: relative; }
+.kb-input-wrap .kb-input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--muted-2); pointer-events: none; }
+
+.kb-row { display: flex; align-items: center; }
+.kb-between { display: flex; align-items: center; justify-content: space-between; }
+.kb-gold { color: var(--gold); }
+.kb-grn { color: var(--green); }
+.kb-red { color: var(--red); }
+
+/* ---------- Acentos Champions (azul) ---------- */
+.kb-eyebrow.blue { color: var(--blue); }
+.kb-pill.blue { color: var(--blue); border-color: rgba(88,182,255,0.3); background: rgba(88,182,255,0.1); }
+.kb-btn.blue { background: linear-gradient(118deg, #58B6FF 0%, #7BD0FF 100%); color: #06182A; }
+.cl-scope .kb-eyebrow { color: var(--blue); }
+.cl-scope .kb-odd:hover { border-color: rgba(88,182,255,0.45); }
+.cl-scope .kb-odd.sel { background: linear-gradient(118deg, #58B6FF 0%, #7BD0FF 100%); border-color: transparent; }
+.cl-scope .kb-odd.sel .pick, .cl-scope .kb-odd.sel .val { color: #06182A; }
+
+/* ---------- Spinner ---------- */
+.kb-spinner { width: 30px; height: 30px; border-radius: 50%; border: 3px solid var(--surface-3); border-top-color: var(--green); animation: kb-spin 0.8s linear infinite; }
+@keyframes kb-spin { to { transform: rotate(360deg); } }

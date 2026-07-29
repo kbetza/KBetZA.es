@@ -1,46 +1,7 @@
-# Local Netlify folder
-.netlify
-
-# Dependencies
 node_modules/
-.pnpm-store/
-.yarn/
-.yarnrc.yml
-.pnp.*
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# Build outputs
 dist/
-build/
-out/
-.cache/
-.tmp/
-temp/
-
-# Env files
-.env
-.env.*
-!.env.example
-
-# OS files
+dev-dist/
 .DS_Store
-Thumbs.db
-
-# Editor / IDE
-.vscode/
-.idea/
-*.swp
-
-# Logs
-logs/
 *.log
-
-# Coverage
-coverage/
-.nyc_output/
-
-# Optional: Netlify Functions build artifacts (if any)
-.netlify/functions-serve/
+.netlify/
+# .env se incluye a propósito: solo contiene la clave anon pública.

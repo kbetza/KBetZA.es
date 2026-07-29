@@ -1,22 +1,22 @@
 {
-  "name": "quiniela-laliga",
-  "version": "3.0.0",
-  "description": "Quiniela La Liga - Sistema de apuestas con Supabase",
+  "name": "kbetza-app",
+  "private": true,
+  "version": "1.0.0",
   "type": "module",
+  "description": "KBetZA 2026 — Quiniela (LaLiga). App + Supabase.",
   "scripts": {
-    "dev": "netlify dev",
-    "build": "echo 'No build step needed'",
-    "hash-passwords": "node scripts/hash-passwords.js",
-    "validate": "node scripts/validate-migration.js"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.39.0",
-    "bcryptjs": "^2.4.3"
+    "@supabase/supabase-js": "^2.45.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "netlify-cli": "^17.0.0"
-  },
-  "engines": {
-    "node": ">=18.0.0"
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.2",
+    "vite-plugin-pwa": "^0.20.5"
   }
 }
