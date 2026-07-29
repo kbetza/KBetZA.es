@@ -32,9 +32,12 @@ export function BetScreen({ onBack, onNav, comp = 'PD', jornada }) {
       const picks = await getMyPicks(user.username, comp);
       if (!alive) return;
       const initial = {};
-      jmatches.forEach((m) => { if (picks[m.id_partido]) initial[m.id_partido] = picks[m.id_partido].pick; });
+      const locked = new Set();
+      jmatches.forEach((m) => { if (picks[m.id_partido]) { initial[m.id_partido] = picks[m.id_partido].pick; locked.add(m.id_partido); } });
+      // Las apuestas no son editables: si TODA la jornada visible ya está apostada, a ver mi apuesta
+      if (locked.size === jmatches.length) { onNav('miapuesta', { comp, jornada: target }); return; }
       setSel(initial);
-      setState({ loading: false, matches: jmatches, jornadaStr: target });
+      setState({ loading: false, matches: jmatches, jornadaStr: target, locked });
     })().catch((e) => { console.error(e); if (alive) setState({ loading: false, error: true }); });
     return () => { alive = false; };
   }, [user.username, comp, jornada]);
@@ -45,11 +48,13 @@ export function BetScreen({ onBack, onNav, comp = 'PD', jornada }) {
   if (state.error) return <div className={cls}><Header title="Quiniela" onBack={onBack} /><EmptyState icon="info" title="Error cargando los partidos" /></div>;
 
   const matches = state.matches;
+  const locked = state.locked || new Set();
+  const accent = blue ? 'var(--blue)' : 'var(--green)';
   const picked = Object.keys(sel).length;
   const complete = picked === matches.length;
   const sumCuotas = matches.reduce((acc, m) => sel[m.id_partido] ? acc + Number(pickOdd(m, sel[m.id_partido])) : acc, 0);
   const maxCuota = sumCuotas * picked;
-  const choose = (id, pick) => setSel((s) => ({ ...s, [id]: pick }));
+  const choose = (id, pick) => { if (locked.has(id)) return; setSel((s) => ({ ...s, [id]: pick })); };
 
   const submit = async () => {
     if (!complete || sending) return;
@@ -96,29 +101,38 @@ export function BetScreen({ onBack, onNav, comp = 'PD', jornada }) {
 
       <div className="kb-scroll" style={{ padding: '4px 20px 160px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
-          {matches.map((m, i) => (
-            <div key={m.id_partido} className="kb-card" style={{ padding: '13px 14px' }}>
-              <div className="kb-between" style={{ marginBottom: 11 }}>
-                <span className="kb-row" style={{ gap: 6, fontSize: 11.5, color: 'var(--muted-2)' }}>
-                  <Icon name="calendar" size={13} /> {fmtFecha(m.fecha)} · {fmtHora(m.hora)}
-                </span>
-                <span style={{ fontSize: 11, color: 'var(--muted-2)', fontFamily: 'var(--font-cond)', fontWeight: 700 }}>{String(i + 1).padStart(2, '0')}</span>
+          {matches.map((m, i) => {
+            const isLocked = locked.has(m.id_partido);
+            return (
+              <div key={m.id_partido} className="kb-card" style={{ padding: '13px 14px' }}>
+                <div className="kb-between" style={{ marginBottom: 11 }}>
+                  <span className="kb-row" style={{ gap: 6, fontSize: 11.5, color: 'var(--muted-2)' }}>
+                    <Icon name="calendar" size={13} /> {fmtFecha(m.fecha)} · {fmtHora(m.hora)}
+                  </span>
+                  {isLocked
+                    ? <span className="kb-row" style={{ gap: 4, fontSize: 10.5, color: accent, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.3 }}><Icon name="lock" size={12} /> Apostada</span>
+                    : <span style={{ fontSize: 11, color: 'var(--muted-2)', fontFamily: 'var(--font-cond)', fontWeight: 700 }}>{String(i + 1).padStart(2, '0')}</span>}
+                </div>
+                <div style={{ marginBottom: 13 }}>
+                  <MatchTeams
+                    homeBadge={<CompBadge comp={comp} id={m.id_local} name={m.equipo_local} size={56} />} homeLabel={label(comp, m.id_local, m.equipo_local)}
+                    awayBadge={<CompBadge comp={comp} id={m.id_visitante} name={m.equipo_visitante} size={56} />} awayLabel={label(comp, m.id_visitante, m.equipo_visitante)} />
+                </div>
+                <div className="kb-odds">
+                  {['1', 'X', '2'].map((p) => {
+                    const isSel = sel[m.id_partido] === p;
+                    return (
+                      <button key={p} className={'kb-odd' + (isSel ? ' sel' : '')} disabled={isLocked} onClick={() => choose(m.id_partido, p)}
+                        style={isLocked ? { opacity: isSel ? 1 : 0.3, cursor: 'default' } : undefined}>
+                        <span className="pick">{p}</span>
+                        <span className="val">{fmtOdd(pickOdd(m, p))}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-              <div style={{ marginBottom: 13 }}>
-                <MatchTeams
-                  homeBadge={<CompBadge comp={comp} id={m.id_local} name={m.equipo_local} size={56} />} homeLabel={label(comp, m.id_local, m.equipo_local)}
-                  awayBadge={<CompBadge comp={comp} id={m.id_visitante} name={m.equipo_visitante} size={56} />} awayLabel={label(comp, m.id_visitante, m.equipo_visitante)} />
-              </div>
-              <div className="kb-odds">
-                {['1', 'X', '2'].map((p) => (
-                  <button key={p} className={'kb-odd' + (sel[m.id_partido] === p ? ' sel' : '')} onClick={() => choose(m.id_partido, p)}>
-                    <span className="pick">{p}</span>
-                    <span className="val">{fmtOdd(pickOdd(m, p))}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 

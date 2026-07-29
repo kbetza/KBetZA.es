@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { Icon } from '../components/Icon.jsx';
 import { Header, BottomNav, Avatar, Loading } from '../components/ui.jsx';
 import { CompBadge, teamLabel } from '../components/Badge.jsx';
-import { getPlayerStandings, getPlayerStandingsLast, getPlayerStandingsGeneral, getGroupMembers, getLeagueStandings, isClLeaguePhaseOver, getClBracket, getUserBet } from '../lib/api.js';
+import { getPlayerStandings, getPlayerStandingsLast, getPlayerStandingsGeneral, getGroupMembers, getLeagueStandings, isClLeaguePhaseOver, getClBracket, getUserBet, getBote, setBote } from '../lib/api.js';
 import { fmtPts, fmtFecha, fmtHora, roundName } from '../lib/format.js';
 import { useAuth } from '../context/AuthContext.jsx';
 
@@ -99,6 +99,7 @@ export function RankingScreen({ onNav }) {
       )}
 
       <div className="kb-scroll" style={{ padding: comp.kind === 'combined' ? '8px 20px 24px' : '4px 20px 24px' }}>
+        {scope !== 'ALL' && <BoteBanner scope={scope} />}
         {groupLoading ? <Loading />
           : comp.kind === 'combined'
             ? <PlayersBoard key="GENERAL" a={A_GENERAL} mode="combined" members={members} />
@@ -107,6 +108,79 @@ export function RankingScreen({ onNav }) {
               : <LeagueTable key={compKey + '-t'} comp={compKey} />)}
       </div>
       <BottomNav active="ranking" onNav={onNav} />
+    </div>
+  );
+}
+
+/* Banner de votación del BOTE por grupo (solo Familia/Sonaos, no General) */
+function BoteBanner({ scope }) {
+  const { user } = useAuth();
+  const [b, setB] = useState(null);
+  const [busy, setBusy] = useState(false);
+  useEffect(() => { setB(null); getBote(scope, user.username).then(setB).catch(() => setB(null)); }, [scope, user.username]);
+  if (!b) return null;
+
+  const { total, votos, voted, premio, cerrado } = b;
+  const pct = total > 0 ? Math.min(100, Math.round((votos / total) * 100)) : 0;
+  const allIn = total > 0 && votos >= total;
+  const GOLD = '#FFC940';
+
+  const vote = () => {
+    if (cerrado || busy) return;
+    setBusy(true);
+    const next = !voted;
+    setB((prev) => ({ ...prev, voted: next, votos: prev.votos + (next ? 1 : -1) }));
+    setBote(user.username, scope, next)
+      .then((res) => { if (res && res.total !== undefined) setB(res); })
+      .catch(() => getBote(scope, user.username).then(setB))
+      .finally(() => setBusy(false));
+  };
+
+  return (
+    <div style={{
+      overflow: 'hidden', borderRadius: 'var(--r-xl)', marginBottom: 18, padding: '15px 16px',
+      background: `linear-gradient(120deg, rgba(255,201,64,${allIn ? 0.22 : 0.14}), rgba(255,201,64,0.04))`,
+      border: `1px solid ${allIn ? GOLD : 'rgba(255,201,64,0.5)'}`,
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 9 }}>
+        <span style={{ width: 34, height: 34, borderRadius: 10, background: 'rgba(255,201,64,0.16)', color: GOLD, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <Icon name="coins" size={19} />
+        </span>
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontFamily: 'var(--font-cond)', fontWeight: 800, fontSize: 15, color: GOLD, textTransform: 'uppercase', letterSpacing: 0.4, lineHeight: 1.1 }}>Bote de {scope}</div>
+          <div style={{ fontSize: 11.5, color: 'var(--muted)' }}>{cerrado ? 'Votación cerrada' : 'Vota antes del fin de la Jornada 5'}</div>
+        </div>
+        <div style={{ marginLeft: 'auto', textAlign: 'right', flexShrink: 0 }}>
+          <div className="kb-num" style={{ fontSize: 22, color: GOLD, lineHeight: 1 }}>{premio}€</div>
+          <div style={{ fontSize: 9.5, color: 'var(--muted-2)', textTransform: 'uppercase', letterSpacing: 0.5 }}>al ganador</div>
+        </div>
+      </div>
+
+      <p style={{ fontSize: 13, color: 'var(--text)', lineHeight: 1.4, margin: '2px 0 12px' }}>
+        ¿Os jugáis un bote en <b>{scope}</b>? Si votáis <b>los {total}</b>, cada uno pone <b>5€</b> y el ganador se lleva <b style={{ color: GOLD }}>{premio}€</b>. 🔥
+      </p>
+
+      <div className="kb-between" style={{ marginBottom: 6 }}>
+        <span style={{ fontSize: 11.5, color: 'var(--muted)' }}>{votos} de {total} han votado</span>
+        <span className="kb-num" style={{ fontSize: 12.5, color: allIn ? GOLD : 'var(--text)' }}>{pct}%</span>
+      </div>
+      <div style={{ height: 8, borderRadius: 99, background: 'var(--surface-3)', overflow: 'hidden', marginBottom: 13 }}>
+        <div style={{ height: '100%', width: `${pct}%`, borderRadius: 99, background: `linear-gradient(90deg, ${GOLD}, #FFE08A)`, transition: 'width 0.3s' }} />
+      </div>
+
+      {allIn ? (
+        <div style={{ textAlign: 'center', fontFamily: 'var(--font-cond)', fontWeight: 800, fontSize: 15, color: GOLD, textTransform: 'uppercase', letterSpacing: 0.5 }}>🎉 ¡Bote confirmado! Todos dentro</div>
+      ) : cerrado ? (
+        <div style={{ textAlign: 'center', fontSize: 13, color: 'var(--muted)' }}>Se cerró con {votos}/{total} votos — no salió el bote.</div>
+      ) : (
+        <button onClick={vote} disabled={busy} style={{
+          width: '100%', padding: '11px', borderRadius: 11, cursor: busy ? 'default' : 'pointer',
+          fontFamily: 'var(--font-cond)', fontWeight: 800, fontSize: 14, textTransform: 'uppercase', letterSpacing: 0.4,
+          background: voted ? 'var(--surface-3)' : `linear-gradient(118deg, ${GOLD}, #FFE08A)`,
+          color: voted ? GOLD : '#3A2A00',
+          border: voted ? `1px solid ${GOLD}` : 'none',
+        }}>{voted ? '✓ Estás dentro · tocar para salir' : '¡Me apunto al bote!'}</button>
+      )}
     </div>
   );
 }

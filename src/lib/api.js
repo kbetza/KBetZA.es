@@ -321,3 +321,26 @@ export async function postMessage(username, text) {
   if (error) throw error;
   return data;
 }
+
+/* ---------------- FANTASY (interés desde el banner de Inicio) ---------------- */
+export async function getFantasyInterest(username) {
+  const { data, error } = await supabase.rpc('get_fantasy_interest', { p_username: username.toLowerCase() });
+  if (error) throw error;
+  return data === true;
+}
+export async function setFantasyInterest(username, join) {
+  const { error } = await supabase.rpc('set_fantasy_interest', { p_username: username.toLowerCase(), p_join: join });
+  if (error) throw error;
+}
+
+/* ---------------- BOTE por grupo (votación en Clasificación) ---------------- */
+export async function getBote(scope, username) {
+  const { data, error } = await supabase.rpc('get_bote', { p_scope: scope, p_username: username.toLowerCase() });
+  if (error) throw error;
+  return data;
+}
+export async function setBote(username, scope, vote) {
+  const { data, error } = await supabase.rpc('set_bote', { p_username: username.toLowerCase(), p_scope: scope, p_vote: vote });
+  if (error) throw error;
+  return data;
+}

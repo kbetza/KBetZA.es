@@ -40,7 +40,6 @@ export function MyBetScreen({ onNav, comp = 'PD', jornada }) {
   const { bets, picked, resolved, hits, points, total } = data;
   const estado = resolved === 0 ? 'Pendiente' : resolved === total ? 'Finalizada' : 'En juego';
   const sub = `${blue ? 'Champions' : 'LaLiga'} · ${data.label}`;
-  const goEdit = () => onNav('apostar', { comp, jornada: data.jornadaStr, from: 'miapuesta' });
 
   return (
     <div className={cls}>
@@ -98,10 +97,6 @@ export function MyBetScreen({ onNav, comp = 'PD', jornada }) {
             </div>
           ))}
         </div>
-
-        <button className={'kb-btn' + (blue ? ' blue' : '')} style={{ marginTop: 18 }} onClick={goEdit}>
-          <Icon name="edit" size={18} /> {picked === total ? 'Editar quiniela' : 'Completar quiniela'}
-        </button>
       </div>
       <BottomNav active="" onNav={onNav} />
     </div>
