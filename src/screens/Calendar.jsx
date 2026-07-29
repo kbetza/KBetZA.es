@@ -2,18 +2,29 @@ import { useEffect, useState } from 'react';
 import { Icon } from '../components/Icon.jsx';
 import { Header, BottomNav, Loading, EmptyState } from '../components/ui.jsx';
 import { CompBadge, teamLabel as label } from '../components/Badge.jsx';
-import { getCurrentMatchday } from '../lib/api.js';
+import { getSeasonCalendar } from '../lib/api.js';
 import { fmtFecha, fmtHora } from '../lib/format.js';
+import { useClock } from '../context/ClockContext.jsx';
 
 export function CalendarScreen({ onNav }) {
+  const { now } = useClock();
   const [comp, setComp] = useState('PD');
   const blue = comp === 'CL';
   const accent = blue ? 'var(--blue)' : 'var(--green)';
-  const [data, setData] = useState(null);
+  const [jornadas, setJornadas] = useState(null);
+  const [idx, setIdx] = useState(0);
 
   useEffect(() => {
-    setData(null);
-    getCurrentMatchday(comp).then(setData).catch((e) => { console.error(e); setData({ jornada: null, matches: [] }); });
+    setJornadas(null);
+    getSeasonCalendar(comp).then((js) => {
+      setJornadas(js);
+      // Empezar en la jornada actual (la primera que no esté completamente jugada)
+      const t = now();
+      let def = js.findIndex((j) => j.last >= t);
+      if (def < 0) def = Math.max(0, js.length - 1);
+      setIdx(def);
+    }).catch((e) => { console.error(e); setJornadas([]); });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [comp]);
 
   const Toggle = (
@@ -34,26 +45,35 @@ export function CalendarScreen({ onNav }) {
 
   const shell = (children) => (
     <div className={'kb-app' + (blue ? ' cl-scope' : '')}>
-      <Header title="Calendario" sub="Jornada en juego" />
+      <Header title="Calendario" sub="Toda la temporada" />
       {Toggle}
       {children}
       <BottomNav active="calendario" onNav={onNav} />
     </div>
   );
 
-  if (!data) return shell(<Loading />);
-  if (!data.matches.length) return shell(<EmptyState icon="calendar" title="No hay jornada cargada" />);
+  if (!jornadas) return shell(<Loading />);
+  if (!jornadas.length) return shell(<EmptyState icon="calendar" title="Aún no disponible"
+    sub={blue ? 'El calendario de Champions se publicará tras el sorteo.' : 'Sin calendario cargado.'} />);
 
-  const games = data.matches;
+  const jr = jornadas[idx];
+  const games = jr.matches;
   const days = [...new Set(games.map((g) => g.fecha))].sort();
 
   return shell(
     <div className="kb-scroll" style={{ padding: '4px 20px 24px' }}>
-      <div className="kb-card" style={{ padding: '14px 16px', marginBottom: 8 }}>
-        <span className={'kb-eyebrow' + (blue ? ' blue' : '')}>{data.label} · {blue ? 'Champions' : 'LaLiga'}</span>
-        <div className="kb-row" style={{ gap: 7, marginTop: 10, color: 'var(--muted)', fontSize: 13 }}>
-          <Icon name="calendar" size={16} /> {games.length} partidos · del {fmtFecha(days[0])} al {fmtFecha(days[days.length - 1])}
+      {/* Navegador de jornadas */}
+      <div className="kb-card" style={{ padding: '9px 10px', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <button className="kb-icon-btn" disabled={idx === 0} onClick={() => setIdx((i) => Math.max(0, i - 1))}
+          style={{ opacity: idx === 0 ? 0.3 : 1 }} aria-label="Jornada anterior"><Icon name="chevronL" size={19} /></button>
+        <div style={{ flex: 1, textAlign: 'center', minWidth: 0 }}>
+          <div style={{ fontFamily: 'var(--font-cond)', fontWeight: 800, fontSize: 15, color: accent, textTransform: 'uppercase', letterSpacing: 0.4 }}>{jr.label}</div>
+          <div style={{ fontSize: 11, color: 'var(--muted-2)' }}>
+            {games.length} partidos · {fmtFecha(days[0])}{days.length > 1 ? ' – ' + fmtFecha(days[days.length - 1]) : ''}
+          </div>
         </div>
+        <button className="kb-icon-btn" disabled={idx === jornadas.length - 1} onClick={() => setIdx((i) => Math.min(jornadas.length - 1, i + 1))}
+          style={{ opacity: idx === jornadas.length - 1 ? 0.3 : 1 }} aria-label="Jornada siguiente"><Icon name="chevronR" size={19} /></button>
       </div>
 
       {days.map((day) => {

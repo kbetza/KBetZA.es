@@ -5,3 +5,6 @@ dev-dist/
 *.log
 .netlify/
 # .env se incluye a propósito: solo contiene la clave anon pública.
+
+# Credenciales de la peña en claro — NUNCA subir a git
+CREDENCIALES.local.md

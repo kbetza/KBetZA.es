@@ -69,6 +69,24 @@ export async function getActiveJornadas() {
   return { PD: group(pd), CL: group(cl) };
 }
 
+// Calendario COMPLETO de la temporada: todas las jornadas agrupadas y ordenadas por fecha.
+export async function getSeasonCalendar(comp = 'PD') {
+  const { data, error } = await supabase
+    .from('all_matches').select('*').eq('competition', comp)
+    .order('fecha', { ascending: true }).order('hora', { ascending: true });
+  if (error) throw error;
+  const matches = data || [];
+  const ms = (m) => Date.parse(`${m.fecha}T${m.hora || '00:00:00'}Z`);
+  const groups = {};
+  matches.forEach((m) => { (groups[m.jornada] ||= []).push(m); });
+  return Object.entries(groups)
+    .map(([jornada, arr]) => ({
+      jornada, label: roundName(jornada), matches: arr,
+      first: Math.min(...arr.map(ms)), last: Math.max(...arr.map(ms)),
+    }))
+    .sort((a, b) => a.first - b.first);
+}
+
 // Picks del usuario (mapa id_partido -> pronóstico) para una competición
 export async function getMyPicks(username, comp = 'PD') {
   const { data, error } = await supabase

@@ -18,7 +18,7 @@ export default function App() {
   const p = route.params || {};
   let screen;
   switch (route.name) {
-    case 'apostar':    screen = <BetScreen comp={p.comp || 'PD'} jornada={p.jornada} onBack={() => nav('inicio')} onNav={nav} />; break;
+    case 'apostar':    screen = <BetScreen comp={p.comp || 'PD'} jornada={p.jornada} onBack={() => (p.from === 'miapuesta' ? nav('miapuesta', { comp: p.comp, jornada: p.jornada }) : nav('inicio'))} onNav={nav} />; break;
     case 'miapuesta':  screen = <MyBetScreen comp={p.comp || 'PD'} jornada={p.jornada} onNav={nav} />; break;
     case 'ranking':    screen = <RankingScreen onNav={nav} />; break;
     case 'historial':  screen = <HistoryScreen onNav={nav} />; break;

@@ -23,6 +23,10 @@ export const TEAMS = {
   558:  { name: 'RC Celta',         short: 'CEL' },
   559:  { name: 'Sevilla FC',       short: 'SEV' },
   1048: { name: 'Real Oviedo',      short: 'OVI' },
+  // Ascendidos 2026-27 (añadir su escudo en /assets/teams/{id}.png)
+  84:   { name: 'Málaga CF',        short: 'MAL' },
+  560:  { name: 'Deportivo',        short: 'DEP' },
+  5335: { name: 'Racing',           short: 'RAC' },
 };
 
 export const teamLogo = (id) => `/assets/teams/${id}.png`;

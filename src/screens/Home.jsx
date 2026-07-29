@@ -205,7 +205,6 @@ export function HomeScreen({ onNav }) {
       <div className="kb-header" style={{ paddingBottom: 6 }}>
         <Wordmark size={24} />
         <div className="kb-row" style={{ gap: 10 }}>
-          <button className="kb-icon-btn" aria-label="Perfil"><Icon name="user" size={19} /></button>
           <button className="kb-icon-btn" onClick={signOut} aria-label="Cerrar sesión"><Icon name="logout" size={19} /></button>
         </div>
       </div>
