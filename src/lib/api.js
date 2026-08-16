@@ -153,7 +153,10 @@ export async function getPlayerStandings(comp = 'PD') {
     .order('posicion', { ascending: true });
   if (error) throw error;
   return (data || []).map((p) => ({
-    name: p.username, points: Number(p.puntos_totales) || 0,
+    // `name` sigue siendo el username: es el identificador (matching de "TÚ", grupos,
+    // getUserBet). `display` es solo para pintar.
+    name: p.username, display: p.display_name || p.username,
+    points: Number(p.puntos_totales) || 0,
     hits: p.aciertos_totales || 0, bets: p.jornadas_jugadas || 0,
   }));
 }
@@ -163,7 +166,7 @@ export async function getPlayerStandingsGeneral() {
   const [pd, cl] = await Promise.all([getPlayerStandings('PD'), getPlayerStandings('CL')]);
   const map = {};
   [...pd, ...cl].forEach((p) => {
-    const e = (map[p.name] ||= { name: p.name, points: 0, hits: 0, bets: 0 });
+    const e = (map[p.name] ||= { name: p.name, display: p.display, points: 0, hits: 0, bets: 0 });
     e.points += p.points; e.hits += p.hits; e.bets += p.bets;
   });
   return Object.values(map)
@@ -203,7 +206,7 @@ export async function getPlayerStandingsLast(comp = 'PD') {
   }
   const rows = data
     .filter((r) => r.jornada === jornadaStr)
-    .map((r) => ({ name: r.username, points: Number(r.puntos) || 0, hits: r.aciertos || 0, bets: 1 }))
+    .map((r) => ({ name: r.username, display: r.display_name || r.username, points: Number(r.puntos) || 0, hits: r.aciertos || 0, bets: 1 }))
     .sort((a, b) => b.points - a.points);
   return { jornada: jornadaNum(jornadaStr), jornadaStr, label: roundName(jornadaStr), rows };
 }

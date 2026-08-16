@@ -217,7 +217,7 @@ function PlayersBoard({ a, mode, comp, members }) {
 
   // En "última jornada" (o jornada en juego) se puede tocar a un jugador para ver su apuesta
   const canReveal = !combined && filter === 'current' && !!(last && last.jornadaStr);
-  const onPick = canReveal ? (e, name) => setReveal({ name, x: e.clientX, y: e.clientY }) : null;
+  const onPick = canReveal ? (e, name, display) => setReveal({ name, display, x: e.clientX, y: e.clientY }) : null;
 
   return (
     <>
@@ -235,13 +235,13 @@ function PlayersBoard({ a, mode, comp, members }) {
       )}
       <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: 10, marginBottom: 24, marginTop: 8 }}>
         {podium.map((p) => (
-          <PodiumCard key={p.name} player={p} rank={p === top3[0] ? 1 : p === top3[1] ? 2 : 3} a={a} onClick={onPick && ((e) => onPick(e, p.name))} />
+          <PodiumCard key={p.name} player={p} rank={p === top3[0] ? 1 : p === top3[1] ? 2 : 3} a={a} onClick={onPick && ((e) => onPick(e, p.name, p.display))} />
         ))}
       </div>
       {rest.length > 0 && <h2 className="kb-section-title" style={{ marginBottom: 10 }}>Clasificación completa</h2>}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {rest.map((p, i) => (
-          <div key={p.name} className="kb-card" onClick={onPick && ((e) => onPick(e, p.name))} style={{
+          <div key={p.name} className="kb-card" onClick={onPick && ((e) => onPick(e, p.name, p.display))} style={{
             padding: '11px 13px', display: 'flex', alignItems: 'center', gap: 12,
             borderColor: p.isUser ? a.bd45 : 'var(--line)',
             background: p.isUser ? a.bg06 : 'var(--surface)',
@@ -250,7 +250,7 @@ function PlayersBoard({ a, mode, comp, members }) {
             <span className="kb-num" style={{ width: 22, textAlign: 'center', fontSize: 16, color: 'var(--muted)' }}>{i + 4}</span>
             <Avatar name={p.name} size={38} you={p.isUser} accent={a.color} grad={a.grad} />
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 14.5, fontWeight: 600, textTransform: 'capitalize' }}>{p.name} {p.isUser && <span style={{ color: a.color, fontSize: 11, fontWeight: 700 }}>· TÚ</span>}</div>
+              <div style={{ fontSize: 14.5, fontWeight: 600, textTransform: 'capitalize' }}>{p.display || p.name} {p.isUser && <span style={{ color: a.color, fontSize: 11, fontWeight: 700 }}>· TÚ</span>}</div>
               <div style={{ fontSize: 11.5, color: 'var(--muted)', marginTop: 1 }}>{p.hits} aciertos · {p.bets} jorn.</div>
             </div>
             <div style={{ textAlign: 'right', display: 'flex', alignItems: 'center', gap: 7 }}>
@@ -266,11 +266,11 @@ function PlayersBoard({ a, mode, comp, members }) {
 
       {reveal && (
         <RevealBubble x={reveal.x} y={reveal.y} a={a}
-          onYes={() => { setViewing(reveal.name); setReveal(null); }}
+          onYes={() => { setViewing({ name: reveal.name, display: reveal.display }); setReveal(null); }}
           onNo={() => setReveal(null)} />
       )}
       {viewing && (
-        <BetModal name={viewing} comp={comp} jornadaStr={last.jornadaStr} a={a}
+        <BetModal name={viewing.name} display={viewing.display} comp={comp} jornadaStr={last.jornadaStr} a={a}
           onClose={() => setViewing(null)} />
       )}
     </>
@@ -310,7 +310,7 @@ function PickBadge({ pick, ok }) {
 }
 
 /* Modal con la quiniela de otro usuario */
-function BetModal({ name, comp, jornadaStr, a, onClose }) {
+function BetModal({ name, display, comp, jornadaStr, a, onClose }) {
   const [bet, setBet] = useState(null);
   useEffect(() => { getUserBet(name, comp, jornadaStr).then(setBet).catch(() => setBet({ error: true })); }, [name, comp, jornadaStr]);
   return createPortal(
@@ -319,7 +319,7 @@ function BetModal({ name, comp, jornadaStr, a, onClose }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '13px 14px 12px', borderBottom: '1px solid var(--line)' }}>
           <Avatar name={name} size={34} gold accent={a.color} grad={a.grad} />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 14.5, fontWeight: 700, textTransform: 'capitalize', lineHeight: 1.15 }}>{name}</div>
+            <div style={{ fontSize: 14.5, fontWeight: 700, textTransform: 'capitalize', lineHeight: 1.15 }}>{display || name}</div>
             <div style={{ fontSize: 11, color: 'var(--muted)' }}>{bet && !bet.error ? bet.label : roundName(jornadaStr)}</div>
           </div>
           <button onClick={onClose} className="kb-icon-btn" aria-label="Cerrar"><Icon name="x" size={18} /></button>
@@ -395,7 +395,7 @@ function PodiumCard({ player, rank, a, onClick }) {
           <span style={{ position: 'absolute', bottom: -4, right: -4, width: 24, height: 24, borderRadius: '50%', background: 'var(--bg)', border: `2px solid ${cfg.color}`, color: cfg.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-cond)', fontWeight: 800, fontSize: 13 }}>{rank}</span>
         </span>
       </div>
-      <div style={{ fontSize: 13.5, fontWeight: 700, marginBottom: 2, textAlign: 'center', textTransform: 'capitalize', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{player.name}</div>
+      <div style={{ fontSize: 13.5, fontWeight: 700, marginBottom: 2, textAlign: 'center', textTransform: 'capitalize', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{player.display || player.name}</div>
       {player.isUser && <div style={{ color: a.color, fontSize: 10, fontWeight: 700, marginBottom: 4 }}>TÚ</div>}
       <div style={{ width: '100%', height: cfg.h, borderRadius: '14px 14px 0 0', background: `linear-gradient(180deg, ${cfg.bg}, transparent)`, border: '1px solid var(--line)', borderBottom: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 14, gap: 3, marginTop: 4 }}>
         <span style={{ color: cfg.color }}><Icon name={cfg.icon} size={20} /></span>
