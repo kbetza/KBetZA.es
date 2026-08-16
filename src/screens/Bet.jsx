@@ -107,7 +107,7 @@ export function BetScreen({ onBack, onNav, comp = 'PD', jornada }) {
               <div key={m.id_partido} className="kb-card" style={{ padding: '13px 14px' }}>
                 <div className="kb-between" style={{ marginBottom: 11 }}>
                   <span className="kb-row" style={{ gap: 6, fontSize: 11.5, color: 'var(--muted-2)' }}>
-                    <Icon name="calendar" size={13} /> {fmtFecha(m.fecha)} · {fmtHora(m.hora)}
+                    <Icon name="calendar" size={13} /> {fmtFecha(m.fecha, m.hora)} · {fmtHora(m.hora, m.fecha)}
                   </span>
                   {isLocked
                     ? <span className="kb-row" style={{ gap: 4, fontSize: 10.5, color: accent, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.3 }}><Icon name="lock" size={12} /> Apostada</span>

@@ -3,7 +3,7 @@ import { Icon } from '../components/Icon.jsx';
 import { Header, BottomNav, Loading, EmptyState } from '../components/ui.jsx';
 import { CompBadge, teamLabel as label } from '../components/Badge.jsx';
 import { getSeasonCalendar } from '../lib/api.js';
-import { fmtFecha, fmtHora } from '../lib/format.js';
+import { fmtFecha, fmtHora, diaLocal, kickoffDate } from '../lib/format.js';
 import { useClock } from '../context/ClockContext.jsx';
 
 export function CalendarScreen({ onNav }) {
@@ -58,7 +58,9 @@ export function CalendarScreen({ onNav }) {
 
   const jr = jornadas[idx];
   const games = jr.matches;
-  const days = [...new Set(games.map((g) => g.fecha))].sort();
+  // Agrupamos por el día ESPAÑOL, no por la fecha UTC: un partido nocturno
+  // pertenece al día en que se ve, no al día UTC del saque.
+  const days = [...new Set(games.map((g) => diaLocal(g.fecha, g.hora)))].sort();
 
   return shell(
     <div className="kb-scroll" style={{ padding: '4px 20px 24px' }}>
@@ -77,7 +79,8 @@ export function CalendarScreen({ onNav }) {
       </div>
 
       {days.map((day) => {
-        const dayGames = games.filter((g) => g.fecha === day).sort((a, b) => (a.hora || '').localeCompare(b.hora || ''));
+        const dayGames = games.filter((g) => diaLocal(g.fecha, g.hora) === day)
+          .sort((a, b) => kickoffDate(a.fecha, a.hora) - kickoffDate(b.fecha, b.hora));
         return (
           <div key={day}>
             <div className="kb-row" style={{ gap: 10, margin: '18px 2px 10px' }}>
@@ -92,7 +95,7 @@ export function CalendarScreen({ onNav }) {
                     {g.resultado ? (
                       <div className="kb-num" style={{ fontSize: 14, color: 'var(--text)' }}>{g.marcador}</div>
                     ) : (
-                      <div className="kb-num" style={{ fontSize: 15, color: accent }}>{fmtHora(g.hora)}</div>
+                      <div className="kb-num" style={{ fontSize: 15, color: accent }}>{fmtHora(g.hora, g.fecha)}</div>
                     )}
                   </div>
                   <span style={{ width: 1, alignSelf: 'stretch', background: 'var(--line)', flexShrink: 0 }} />

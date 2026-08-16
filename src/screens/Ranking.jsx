@@ -362,7 +362,7 @@ function BetModal({ name, display, comp, jornadaStr, a, onClose }) {
                               <PickBadge pick={b.pick} ok={b.ok} />
                               <span style={{ fontSize: 10, color: 'var(--muted-2)' }}>{b.result ? `Res: ${b.result}` : 'En juego'}</span>
                             </>
-                          : <span style={{ fontSize: 10, color: 'var(--muted-2)', textAlign: 'center', lineHeight: 1.25 }}>{fmtFecha(b.fecha)}<br />{fmtHora(b.hora)}</span>}
+                          : <span style={{ fontSize: 10, color: 'var(--muted-2)', textAlign: 'center', lineHeight: 1.25 }}>{fmtFecha(b.fecha, b.hora)}<br />{fmtHora(b.hora, b.fecha)}</span>}
                       </div>
                       <div className="kb-row" style={{ gap: 7, minWidth: 0 }}>
                         <CompBadge comp={comp} id={b.awayId} name={b.away} size={22} />
@@ -500,7 +500,7 @@ function BracketMatch({ m }) {
       <div style={{ minWidth: 52, textAlign: 'center' }}>
         {m.jugado
           ? <span className="kb-num" style={{ fontSize: 15, fontWeight: 800, color: 'var(--text)' }}>{m.marcador || '—'}</span>
-          : <span style={{ fontSize: 10.5, color: 'var(--muted)', lineHeight: 1.25, display: 'block' }}>{fmtFecha(m.fecha)}<br />{fmtHora(m.hora)}</span>}
+          : <span style={{ fontSize: 10.5, color: 'var(--muted)', lineHeight: 1.25, display: 'block' }}>{fmtFecha(m.fecha, m.hora)}<br />{fmtHora(m.hora, m.fecha)}</span>}
       </div>
       <div className="kb-row" style={{ gap: 8, minWidth: 0 }}>
         <CompBadge comp="CL" id={m.id_visitante} name={m.equipo_visitante} size={24} />

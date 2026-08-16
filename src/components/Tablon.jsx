@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Icon } from './Icon.jsx';
 import { Header } from './ui.jsx';
-import { fmtPts } from '../lib/format.js';
+import { fmtPts, TZ } from '../lib/format.js';
 
 const NAME_COLORS = ['#FFC940', '#58B6FF', '#9C7BFF', '#FF8FA3', '#8BEF4E', '#5EE6C0', '#F4A261'];
 function nameColor(name) {
@@ -11,18 +11,22 @@ function nameColor(name) {
   return NAME_COLORS[h % NAME_COLORS.length];
 }
 
-// "2026-06-13T10:38:00Z" -> "Hoy · 10:38" / "Ayer · 22:14" / "11 jun · 09:30"
+// "2026-06-13T10:38:00Z" -> "Hoy · 12:38" / "Ayer · 22:14" / "11 jun · 09:30"
+// Siempre en hora peninsular, no en la del dispositivo: la peña queda a una hora
+// concreta y un mensaje debe leerse igual desde cualquier sitio.
+const dfMsgHora  = new Intl.DateTimeFormat('es-ES', { timeZone: TZ, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+const dfMsgFecha = new Intl.DateTimeFormat('es-ES', { timeZone: TZ, day: 'numeric', month: 'short' });
+const dfMsgDia   = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' });
+
 function fmtTime(iso) {
   const d = new Date(iso);
   if (isNaN(d)) return '';
+  const hm = dfMsgHora.format(d);
   const now = new Date();
-  const hm = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-  const sameDay = (a, b) => a.toDateString() === b.toDateString();
-  const yest = new Date(now); yest.setDate(now.getDate() - 1);
-  if (sameDay(d, now)) return `Hoy · ${hm}`;
-  if (sameDay(d, yest)) return `Ayer · ${hm}`;
-  const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-  return `${d.getDate()} ${meses[d.getMonth()]} · ${hm}`;
+  const dia = dfMsgDia.format(d);
+  if (dia === dfMsgDia.format(now)) return `Hoy · ${hm}`;
+  if (dia === dfMsgDia.format(new Date(now.getTime() - 86400000))) return `Ayer · ${hm}`;
+  return `${dfMsgFecha.format(d)} · ${hm}`;
 }
 
 export function ChatBubble({ msg, me }) {

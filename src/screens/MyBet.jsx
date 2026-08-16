@@ -63,8 +63,8 @@ export function MyBetScreen({ onNav, comp = 'PD', jornada }) {
             <div key={b.matchId} className="kb-card" style={{ padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
               {!b.played && (
                 <div style={{ width: 40, flexShrink: 0, textAlign: 'center' }}>
-                  <div style={{ fontSize: 11, color: 'var(--muted)' }}>{fmtFecha(b.fecha)}</div>
-                  <div className="kb-num" style={{ fontSize: 12, color: 'var(--muted-2)' }}>{fmtHora(b.hora)}</div>
+                  <div style={{ fontSize: 11, color: 'var(--muted)' }}>{fmtFecha(b.fecha, b.hora)}</div>
+                  <div className="kb-num" style={{ fontSize: 12, color: 'var(--muted-2)' }}>{fmtHora(b.hora, b.fecha)}</div>
                 </div>
               )}
               <div style={{ flex: 1, minWidth: 0 }}>
