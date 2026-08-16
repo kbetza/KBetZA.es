@@ -233,11 +233,6 @@ function PlayersBoard({ a, mode, comp, members }) {
           ))}
         </div>
       )}
-      {canReveal && (
-        <p style={{ fontSize: 12, color: 'var(--muted)', margin: '-6px 0 16px', display: 'flex', alignItems: 'center', gap: 6 }}>
-          <Icon name="ticket" size={14} /> Toca a un jugador para ver su quiniela de esta jornada.
-        </p>
-      )}
       <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: 10, marginBottom: 24, marginTop: 8 }}>
         {podium.map((p) => (
           <PodiumCard key={p.name} player={p} rank={p === top3[0] ? 1 : p === top3[1] ? 2 : 3} a={a} onClick={onPick && ((e) => onPick(e, p.name))} />
