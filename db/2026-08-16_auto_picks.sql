@@ -3,12 +3,12 @@
    Aplicado en Supabase (frclhxrafeadebmuikjr) el 2026-08-16.
 
    Regla: cuando un partido termina, todo usuario que no lo haya pronosticado
-   recibe un pronóstico aleatorio uniforme (1/X/2) con la cuota reducida a la
-   mitad de su ganancia neta:
+   recibe un pronóstico aleatorio uniforme (1/X/2) con la cuota reducida a un
+   TERCIO de su ganancia neta:
 
-       cuota_asignada = ((cuota_real - 1) / 2) + 1
+       cuota_asignada = ((cuota_real - 1) / 3) + 1
 
-       1.30 -> 1.15     3.00 -> 2.00     10.00 -> 5.50
+       1.30 -> 1.10     3.00 -> 1.67     10.00 -> 4.00
 
    Decisiones tomadas:
      · Alcance: los 30 usuarios registrados, incluidos los que nunca han jugado.
@@ -28,7 +28,7 @@ ALTER TABLE public.predictions
   ADD COLUMN IF NOT EXISTS auto boolean NOT NULL DEFAULT false;
 
 COMMENT ON COLUMN public.predictions.auto IS
-  'true = pronostico aleatorio asignado por assign_random_predictions() al terminar el partido, con cuota reducida ((c-1)/2)+1';
+  'true = pronostico aleatorio asignado por assign_random_predictions() al terminar el partido, con cuota reducida ((c-1)/3)+1';
 
 
 -- 2) La asignación ------------------------------------------------------------
@@ -65,7 +65,7 @@ BEGIN
                     WHEN '1' THEN c.cuota_local
                     WHEN 'X' THEN c.cuota_empate
                     ELSE          c.cuota_visitante
-                  END) - 1) / 2) + 1, 2),
+                  END) - 1) / 3) + 1, 2),
          true
   FROM candidatos c
   ON CONFLICT (username, id_partido) DO NOTHING;
@@ -156,3 +156,20 @@ CREATE OR REPLACE VIEW public.predictions_history AS
 
 -- 6) Relleno retroactivo (ya ejecutado: 48 pronósticos sobre los 3 partidos de la J1)
 -- SELECT assign_random_predictions();
+
+
+-- 7) Recálculo tras bajar la reducción de 1/2 a 1/3 --------------------------
+-- Ejecutado sobre las 48 filas ya asignadas. OJO: la base es la cuota ORIGINAL
+-- del partido según el pronóstico, NO la cuota guardada, que ya venía reducida.
+-- Recalcular sobre la guardada aplicaría la reducción dos veces.
+--
+-- UPDATE predictions p
+-- SET cuota = round((((CASE p.pronostico
+--                        WHEN '1' THEN m.cuota_local
+--                        WHEN 'X' THEN m.cuota_empate
+--                        ELSE          m.cuota_visitante
+--                      END) - 1) / 3) + 1, 2)
+-- FROM all_matches m
+-- WHERE m.id_partido = p.id_partido
+--   AND p.auto
+--   AND m.cuota_local IS NOT NULL AND m.cuota_empate IS NOT NULL AND m.cuota_visitante IS NOT NULL;
