@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { Icon } from '../components/Icon.jsx';
 import { Wordmark, StatTile, BottomNav, Loading } from '../components/ui.jsx';
 import { TablonPreview, TablonScreen } from '../components/Tablon.jsx';
-import { getCurrentMatchday, getMyPicks, getPlayerStandings, getMessages, postMessage, getCheckpoints, getFantasyInterest, setFantasyInterest } from '../lib/api.js';
+import { getCurrentMatchday, getMyPicks, getPlayerStandings, getMessages, postMessage, getCheckpoints } from '../lib/api.js';
 import { supabase } from '../lib/supabase.js';
 import { fmtPts, fmtFecha, fmtHora, roundName } from '../lib/format.js';
 import { useAuth } from '../context/AuthContext.jsx';
@@ -80,7 +80,7 @@ function Hero({ comp, jornadaStr, matches, hasBet, onNav }) {
   const title = roundName(jornadaStr);
   const bg = `/assets/heroes/${blue ? 'champions' : 'la_liga'}/${heroKey(jornadaStr)}.png`;
   const rgb = blue ? '8,17,32' : '11,20,16';
-  const deadline = `${fmtFecha(next.fecha)} · ${fmtHora(next.hora)}`;
+  const deadline = `${fmtFecha(next.fecha, next.hora)} · ${fmtHora(next.hora, next.fecha)}`;
   const goBet = () => onNav(hasBet ? 'miapuesta' : 'apostar', { comp, jornada: jornadaStr });
 
   return (
@@ -165,14 +165,6 @@ export function HomeScreen({ onNav }) {
     return () => { alive = false; supabase.removeChannel(channel); };
   }, []);
 
-  const [fantasy, setFantasy] = useState(false);
-  useEffect(() => { getFantasyInterest(user.username).then(setFantasy).catch(() => {}); }, [user.username]);
-  const toggleFantasy = () => {
-    const next = !fantasy;
-    setFantasy(next);
-    setFantasyInterest(user.username, next).catch(() => setFantasy(!next));
-  };
-
   const unread = messages.filter((m) => m.username !== user.username && new Date(m.created_at).getTime() > lastSeen).length;
   const markSeen = useCallback(() => { const t = Date.now(); localStorage.setItem(SEEN_KEY, String(t)); setLastSeen(t); }, []);
   const openTablon = () => { markSeen(); setTablonOpen(true); };
@@ -227,25 +219,6 @@ export function HomeScreen({ onNav }) {
           </div>
         )}
         {heroes.map((h) => <Hero key={h.comp + h.jornadaStr} {...h} onNav={onNav} />)}
-
-        {/* Banner: interés en el Fantasy de KBetZA */}
-        <label style={{
-          display: 'flex', alignItems: 'center', gap: 13, padding: '14px 15px', marginBottom: 18, cursor: 'pointer',
-          borderRadius: 'var(--r-xl)',
-          background: 'linear-gradient(120deg, rgba(255,82,71,0.18), rgba(255,82,71,0.06))',
-          border: '1px solid rgba(255,82,71,0.5)',
-        }}>
-          <input type="checkbox" checked={fantasy} onChange={toggleFantasy}
-            style={{ width: 22, height: 22, flexShrink: 0, accentColor: 'var(--red)', cursor: 'pointer' }} />
-          <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)', lineHeight: 1.25 }}>
-              ¿Te quieres unir al <span style={{ color: 'var(--red)' }}>Fantasy de KBetZA</span>?
-            </div>
-            <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--red)', marginTop: 2 }}>
-              {fantasy ? '¡Apuntado! 🎉' : '¡Marca esta casilla!'}
-            </div>
-          </div>
-        </label>
 
         <div className="kb-between" style={{ marginBottom: 10, marginTop: 4 }}>
           <h2 className="kb-section-title">Tu posición · LaLiga</h2>
