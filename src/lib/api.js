@@ -292,6 +292,8 @@ export async function getHistory(username, comp = 'PD') {
       homeId: m.id_local ?? null, awayId: m.id_visitante ?? null,
       home: b.equipo_local, away: b.equipo_visitante,
       pick: b.pronostico, result: b.resultado_real, odd: Number(b.cuota), ok: b.acierto === true,
+      // `played` = el partido ya se jugó. Los pendientes no tienen resultado ni acierto.
+      played: b.jugado === true, fecha: b.fecha, hora: b.hora,
     });
   });
 
@@ -301,13 +303,18 @@ export async function getHistory(username, comp = 'PD') {
   return Object.entries(groups)
     .map(([jornadaStr, g]) => {
       const p = myPts[jornadaStr] || {};
+      const bets = g.bets.slice().sort((x, y) =>
+        `${x.fecha || ''}T${x.hora || ''}`.localeCompare(`${y.fecha || ''}T${y.hora || ''}`));
+      const played = bets.filter((b) => b.played);
       return {
         jornada: jornadaNum(jornadaStr),
-        hits: p.aciertos ?? g.bets.filter((b) => b.ok).length,
-        total: g.bets.length,
+        hits: p.aciertos ?? played.filter((b) => b.ok).length,
+        // `total` cuenta solo los jugados: es el denominador de los aciertos.
+        total: played.length,
+        pending: bets.length - played.length,
         points: Number(p.puntos) || 0,
         rank: rankByJornada[jornadaStr] || null,
-        bets: g.bets,
+        bets,
       };
     })
     .sort((a, b) => b.jornada - a.jornada);

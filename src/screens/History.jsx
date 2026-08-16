@@ -55,7 +55,7 @@ export function HistoryScreen({ onNav }) {
   );
 
   if (list === null) return shell(<Loading />);
-  if (!list.length) return shell(<EmptyState icon="history" title="Sin historial todavía" sub={`Aún no hay jornadas de ${blue ? 'Champions' : 'LaLiga'} cerradas.`} />);
+  if (!list.length) return shell(<EmptyState icon="history" title="Sin historial todavía" sub={`Aún no has enviado ninguna quiniela de ${blue ? 'Champions' : 'LaLiga'}.`} />);
 
   const best = list.reduce((a, b) => (b.points > a.points ? b : a), list[0]);
 
@@ -84,14 +84,17 @@ export function HistoryScreen({ onNav }) {
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div className="kb-between" style={{ marginBottom: 6 }}>
-                    <span style={{ fontSize: 13.5, fontWeight: 600 }}>{j.rank ? `Posición #${j.rank}` : 'Jornada jugada'}</span>
+                    <span style={{ fontSize: 13.5, fontWeight: 600 }}>{j.rank ? `Posición #${j.rank}` : (j.total === 0 ? 'Quiniela enviada' : 'Jornada jugada')}</span>
                     <span className="kb-num" style={{ fontSize: 16, color: accent }}>+{fmtPts(j.points)}</span>
                   </div>
                   <div className="kb-row" style={{ gap: 8 }}>
                     <div style={{ flex: 1, height: 5, borderRadius: 99, background: 'var(--surface-3)', overflow: 'hidden' }}>
                       <div style={{ height: '100%', width: `${(j.hits / Math.max(j.total, 1)) * 100}%`, background: blue ? 'linear-gradient(118deg,#58B6FF,#7BD0FF)' : 'var(--grad-green)', borderRadius: 99 }} />
                     </div>
-                    <span style={{ fontSize: 11.5, color: 'var(--muted)' }}>{j.hits}/{j.total}</span>
+                    <span style={{ fontSize: 11.5, color: 'var(--muted)' }}>
+                      {j.hits}/{j.total}
+                      {j.pending > 0 && <span style={{ color: 'var(--muted-2)' }}> · {j.pending} pend.</span>}
+                    </span>
                     {j.rank === 1 && <span style={{ color: 'var(--gold)' }}><Icon name="crown" size={14} /></span>}
                     {expandable && <span style={{ color: 'var(--muted-2)', transform: isOpen ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s' }}><Icon name="chevronR" size={15} /></span>}
                   </div>
@@ -114,10 +117,17 @@ export function HistoryScreen({ onNav }) {
                         </div>
                         <div style={{ textAlign: 'center' }}>
                           <div style={{ fontSize: 9, color: 'var(--muted-2)', textTransform: 'uppercase' }}>Pts</div>
-                          <div className="kb-num" style={{ fontSize: 15, color: b.ok ? 'var(--green)' : 'var(--muted-2)' }}>{b.ok ? '+' + fmtPts(b.odd) : '0'}</div>
+                          {/* Pendiente: aún no hay puntos, se muestra la cuota en juego */}
+                          <div className="kb-num" style={{ fontSize: 15, color: !b.played ? 'var(--muted-2)' : b.ok ? 'var(--green)' : 'var(--muted-2)' }}>
+                            {!b.played ? fmtPts(b.odd) : b.ok ? '+' + fmtPts(b.odd) : '0'}
+                          </div>
                         </div>
-                        <span style={{ width: 24, height: 24, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: b.ok ? 'rgba(43,227,107,0.15)' : 'rgba(255,82,71,0.15)', color: b.ok ? 'var(--green)' : 'var(--red)' }}>
-                          <Icon name={b.ok ? 'check' : 'x'} size={13} stroke={2.6} />
+                        <span style={{
+                          width: 24, height: 24, borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          background: !b.played ? 'var(--surface-3)' : b.ok ? 'rgba(43,227,107,0.15)' : 'rgba(255,82,71,0.15)',
+                          color: !b.played ? 'var(--muted-2)' : b.ok ? 'var(--green)' : 'var(--red)',
+                        }}>
+                          <Icon name={!b.played ? 'clock' : b.ok ? 'check' : 'x'} size={13} stroke={2.6} />
                         </span>
                       </div>
                     </div>
