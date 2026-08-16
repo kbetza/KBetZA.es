@@ -91,12 +91,12 @@ export async function getSeasonCalendar(comp = 'PD') {
 export async function getMyPicks(username, comp = 'PD') {
   const { data, error } = await supabase
     .from('predictions')
-    .select('id_partido,pronostico,cuota')
+    .select('id_partido,pronostico,cuota,auto')
     .eq('username', username.toLowerCase())
     .eq('competition', comp);
   if (error) throw error;
   const map = {};
-  (data || []).forEach((p) => { map[p.id_partido] = { pick: p.pronostico, odd: Number(p.cuota) }; });
+  (data || []).forEach((p) => { map[p.id_partido] = { pick: p.pronostico, odd: Number(p.cuota), auto: p.auto === true }; });
   return map;
 }
 
@@ -132,6 +132,8 @@ export async function getMyCurrentBet(username, comp = 'PD', jornada = null) {
       home: m.equipo_local, away: m.equipo_visitante,
       jornada: jornadaNum(m.jornada), fecha: m.fecha, hora: m.hora,
       pick, odd: p ? p.odd : null,
+      // `auto` = lo asignó el sistema al terminar el partido, con cuota reducida.
+      auto: p ? p.auto : false,
       played: m.jugado, result: m.resultado,
       ok: m.jugado && pick ? pick === m.resultado : null,
     };
@@ -294,6 +296,8 @@ export async function getHistory(username, comp = 'PD') {
       pick: b.pronostico, result: b.resultado_real, odd: Number(b.cuota), ok: b.acierto === true,
       // `played` = el partido ya se jugó. Los pendientes no tienen resultado ni acierto.
       played: b.jugado === true, fecha: b.fecha, hora: b.hora,
+      // `auto` = lo asignó el sistema al terminar el partido, con cuota reducida.
+      auto: b.auto === true,
     });
   });
 

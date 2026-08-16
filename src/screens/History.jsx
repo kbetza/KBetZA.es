@@ -111,9 +111,10 @@ export function HistoryScreen({ onNav }) {
                           awayBadge={<CompBadge comp={comp} id={b.awayId} name={b.away} size={44} />} awayLabel={label(comp, b.awayId, b.away)} />
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 11, flexShrink: 0 }}>
-                        <div style={{ textAlign: 'center' }}>
-                          <div style={{ fontSize: 9, color: 'var(--muted-2)', textTransform: 'uppercase' }}>Tú</div>
-                          <div className="kb-num" style={{ fontSize: 15 }}>{b.pick || '-'}</div>
+                        {/* Un pronóstico automático no lo eligió el usuario: se marca como tal */}
+                        <div style={{ textAlign: 'center' }} title={b.auto ? 'Pronóstico asignado por el sistema (cuota reducida a la mitad)' : undefined}>
+                          <div style={{ fontSize: 9, color: b.auto ? 'var(--gold)' : 'var(--muted-2)', textTransform: 'uppercase' }}>{b.auto ? 'Auto' : 'Tú'}</div>
+                          <div className="kb-num" style={{ fontSize: 15, color: b.auto ? 'var(--gold)' : 'var(--text)' }}>{b.pick || '-'}</div>
                         </div>
                         <div style={{ textAlign: 'center' }}>
                           <div style={{ fontSize: 9, color: 'var(--muted-2)', textTransform: 'uppercase' }}>Pts</div>
