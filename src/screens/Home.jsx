@@ -68,8 +68,10 @@ function Hero({ comp, jornadaStr, matches, hasBet, onNav }) {
   const [, tick] = useState(0);
   useEffect(() => { const t = setInterval(() => tick((x) => x + 1), 1000); return () => clearInterval(t); }, []);
 
-  const first = matches[0];
-  let d = Math.max(0, kickoffMs(first) - now());
+  // `matches` viene de current_matchday, que solo trae partidos aún no empezados:
+  // matches[0] es el PRÓXIMO por jugar, no el primero de la jornada.
+  const next = matches[0];
+  let d = Math.max(0, kickoffMs(next) - now());
   const days = Math.floor(d / 86400000); d -= days * 86400000;
   const h = Math.floor(d / 3600000); d -= h * 3600000;
   const mn = Math.floor(d / 60000); d -= mn * 60000;
@@ -78,7 +80,7 @@ function Hero({ comp, jornadaStr, matches, hasBet, onNav }) {
   const title = roundName(jornadaStr);
   const bg = `/assets/heroes/${blue ? 'champions' : 'la_liga'}/${heroKey(jornadaStr)}.png`;
   const rgb = blue ? '8,17,32' : '11,20,16';
-  const deadline = `${fmtFecha(first.fecha)} · ${fmtHora(first.hora)}`;
+  const deadline = `${fmtFecha(next.fecha)} · ${fmtHora(next.hora)}`;
   const goBet = () => onNav(hasBet ? 'miapuesta' : 'apostar', { comp, jornada: jornadaStr });
 
   return (
@@ -98,7 +100,7 @@ function Hero({ comp, jornadaStr, matches, hasBet, onNav }) {
       </div>
 
       <div style={{ position: 'relative', marginBottom: 16 }}>
-        <p style={{ color: 'var(--muted)', fontSize: 13, margin: '0 0 8px' }}>Primer partido en</p>
+        <p style={{ color: 'var(--muted)', fontSize: 13, margin: '0 0 8px' }}>Próximo partido en</p>
         <div className="kb-row" style={{ gap: 8, alignItems: 'flex-end' }}>
           {[[days, 'días'], [h, 'horas'], [mn, 'min'], [sc, 'seg']].map(([v, l], i) => (
             <span key={l} style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
