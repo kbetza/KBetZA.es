@@ -174,7 +174,7 @@ function PlayersBoard({ a, mode, comp, members }) {
             <Avatar name={p.name} size={38} you={p.isUser} accent={a.color} grad={a.grad} />
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 14.5, fontWeight: 600, textTransform: 'capitalize' }}>{p.display || p.name} {p.isUser && <span style={{ color: a.color, fontSize: 11, fontWeight: 700 }}>· TÚ</span>}</div>
-              <div style={{ fontSize: 11.5, color: 'var(--muted)', marginTop: 1 }}>{p.hits} aciertos · {p.bets} jorn.</div>
+              <div style={{ fontSize: 11.5, color: 'var(--muted)', marginTop: 1 }}>{p.hits} aciertos</div>
             </div>
             <div style={{ textAlign: 'right', display: 'flex', alignItems: 'center', gap: 7 }}>
               <div>
