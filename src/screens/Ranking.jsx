@@ -3,9 +3,10 @@ import { createPortal } from 'react-dom';
 import { Icon } from '../components/Icon.jsx';
 import { Header, BottomNav, Avatar, Loading } from '../components/ui.jsx';
 import { CompBadge, teamLabel } from '../components/Badge.jsx';
-import { getPlayerStandings, getPlayerStandingsLast, getPlayerStandingsGeneral, getGroupMembers, getLeagueStandings, isClLeaguePhaseOver, getClBracket, getUserBet } from '../lib/api.js';
+import { getPlayerStandings, getPlayerStandingsJornadas, getPlayerStandingsGeneral, getGroupMembers, getUserBet } from '../lib/api.js';
 import { fmtPts, fmtFecha, fmtHora, roundName } from '../lib/format.js';
 import { useAuth } from '../context/AuthContext.jsx';
+import { useClock } from '../context/ClockContext.jsx';
 
 const A_GENERAL = { color: 'var(--gold)', grad: 'linear-gradient(118deg,#FFC940 0%,#FFE08A 100%)', textOn: '#3A2A00', bg12: 'rgba(255,201,64,0.14)', bg06: 'rgba(255,201,64,0.07)', bd45: 'rgba(255,201,64,0.5)' };
 const A_PD = { color: 'var(--green)', grad: 'var(--grad-green)', textOn: '#06210F', bg12: 'rgba(43,227,107,0.12)', bg06: 'rgba(43,227,107,0.06)', bd45: 'rgba(43,227,107,0.45)' };
@@ -28,7 +29,6 @@ export function RankingScreen({ onNav }) {
 
   const [scope, setScope] = useState('ALL');
   const [compKey, setCompKey] = useState('GENERAL');
-  const [sub, setSub] = useState('players');
   const [members, setMembers] = useState(null); // null=todos, undefined=cargando grupo, Set=grupo
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export function RankingScreen({ onNav }) {
       <div style={{ padding: '0 20px 10px', position: 'relative', zIndex: 2 }}>
         <div style={{ display: 'flex', gap: 4, background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 14, padding: 4 }}>
           {COMPS.map((c) => (
-            <button key={c.key} onClick={() => { setCompKey(c.key); setSub('players'); }} style={{
+            <button key={c.key} onClick={() => setCompKey(c.key)} style={{
               flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
               padding: '9px 0', borderRadius: 10, border: 'none', cursor: 'pointer',
               fontFamily: 'var(--font-cond)', fontWeight: 700, fontSize: 13, letterSpacing: 0.3, textTransform: 'uppercase',
@@ -82,29 +82,11 @@ export function RankingScreen({ onNav }) {
         </div>
       </div>
 
-      {/* Nivel 3: jugadores / equipos (solo La Liga / Champions) */}
-      {comp.kind === 'comp' && (
-        <div style={{ padding: '0 20px 12px' }}>
-          <div style={{ display: 'flex', gap: 7 }}>
-            {[['players', 'Jugadores'], ['table', 'Clasificación']].map(([k, lbl]) => (
-              <button key={k} onClick={() => setSub(k)} style={{
-                padding: '6px 13px', borderRadius: 99, cursor: 'pointer',
-                border: '1px solid ' + (sub === k ? a.color : 'var(--line)'),
-                background: sub === k ? a.bg12 : 'var(--surface)',
-                color: sub === k ? a.color : 'var(--muted)', fontSize: 12.5, fontWeight: 600,
-              }}>{lbl}</button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <div className="kb-scroll" style={{ padding: comp.kind === 'combined' ? '8px 20px 24px' : '4px 20px 24px' }}>
+      <div className="kb-scroll" style={{ padding: comp.kind === 'combined' ? '8px 20px 24px' : '0 20px 24px' }}>
         {groupLoading ? <Loading />
           : comp.kind === 'combined'
             ? <PlayersBoard key="GENERAL" a={A_GENERAL} mode="combined" members={members} />
-            : (sub === 'players'
-              ? <PlayersBoard key={compKey + '-p'} a={a} mode="comp" comp={compKey} members={members} />
-              : <LeagueTable key={compKey + '-t'} comp={compKey} />)}
+            : <PlayersBoard key={compKey + '-p'} a={a} mode="comp" comp={compKey} members={members} />}
       </div>
       <BottomNav active="ranking" onNav={onNav} />
     </div>
@@ -113,10 +95,12 @@ export function RankingScreen({ onNav }) {
 
 function PlayersBoard({ a, mode, comp, members }) {
   const { user } = useAuth();
+  const { now } = useClock();
   const combined = mode === 'combined';
+  // 'season' o el texto de una jornada ("Regular season - 2", "Octavos"...)
   const [filter, setFilter] = useState('season');
   const [season, setSeason] = useState(null);
-  const [last, setLast] = useState(null);
+  const [jornadas, setJornadas] = useState(null); // en juego o terminadas, de la última a la primera
   const [reveal, setReveal] = useState(null);   // nombre pendiente de confirmar
   const [viewing, setViewing] = useState(null);  // nombre cuya apuesta se muestra
 
@@ -124,16 +108,40 @@ function PlayersBoard({ a, mode, comp, members }) {
     if (combined) { getPlayerStandingsGeneral().then(setSeason).catch(console.error); }
     else {
       getPlayerStandings(comp).then(setSeason).catch(console.error);
-      getPlayerStandingsLast(comp).then(setLast).catch(console.error);
+      getPlayerStandingsJornadas(comp, now()).then(setJornadas).catch(console.error);
     }
     // remonta por key (comp/modo); el filtro de grupo se aplica con members sin refetch
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  let data = filter === 'season' ? season : last?.rows;
-  if (!data) return <Loading />;
+  const jornada = filter === 'season' ? null : (jornadas || []).find((j) => j.jornadaStr === filter);
+  let data = filter === 'season' ? season : jornada?.rows;
+
+  // Barra de filtros: Temporada + una pastilla por jornada en juego o terminada
+  // (la más reciente primero). Sticky dentro de .kb-scroll; los márgenes negativos
+  // la sacan del padding lateral para que tape de borde a borde lo que pasa debajo.
+  const bar = combined ? null : (
+    <div style={{
+      position: 'sticky', top: 0, zIndex: 3,
+      margin: '0 -20px 18px', padding: '12px 20px',
+      background: 'var(--bg)', borderBottom: '1px solid var(--line)',
+    }}>
+      <div style={{ display: 'flex', gap: 7, overflowX: 'auto', scrollbarWidth: 'none' }}>
+        {[['season', 'Temporada'], ...(jornadas || []).map((j) => [j.jornadaStr, j.label])].map(([k, lbl]) => (
+          <button key={k} onClick={() => setFilter(k)} style={{
+            flex: '0 0 auto', padding: '7px 14px', borderRadius: 99, cursor: 'pointer', whiteSpace: 'nowrap',
+            border: '1px solid ' + (filter === k ? a.color : 'var(--line)'),
+            background: filter === k ? a.bg12 : 'var(--surface)',
+            color: filter === k ? a.color : 'var(--muted)', fontSize: 12.5, fontWeight: 600,
+          }}>{lbl}</button>
+        ))}
+      </div>
+    </div>
+  );
+
+  if (!data) return <>{bar}<Loading /></>;
   if (members) data = data.filter((p) => members.has(p.name));
-  if (!data.length) return <p style={{ color: 'var(--muted)', textAlign: 'center', padding: 30 }}>Aún no hay puntos en esta clasificación.</p>;
+  if (!data.length) return <>{bar}<p style={{ color: 'var(--muted)', textAlign: 'center', padding: 30 }}>Aún no hay puntos en esta clasificación.</p></>;
 
   const marked = data.map((p) => ({ ...p, isUser: p.name === user.username }));
   const sorted = [...marked].sort((x, y) => y.points - x.points);
@@ -141,24 +149,13 @@ function PlayersBoard({ a, mode, comp, members }) {
   const rest = sorted.slice(3);
   const podium = [top3[1], top3[0], top3[2]].filter(Boolean);
 
-  // En "última jornada" (o jornada en juego) se puede tocar a un jugador para ver su apuesta
-  const canReveal = !combined && filter === 'current' && !!(last && last.jornadaStr);
+  // En una jornada concreta se puede tocar a un jugador para ver su apuesta
+  const canReveal = !combined && !!jornada;
   const onPick = canReveal ? (e, name, display) => setReveal({ name, display, x: e.clientX, y: e.clientY }) : null;
 
   return (
     <>
-      {!combined && (
-        <div style={{ display: 'flex', gap: 7, marginBottom: 18 }}>
-          {[['season', 'Temporada'], ['current', last?.label || 'Última jornada']].map(([k, lbl]) => (
-            <button key={k} onClick={() => setFilter(k)} style={{
-              padding: '7px 14px', borderRadius: 99, cursor: 'pointer',
-              border: '1px solid ' + (filter === k ? a.color : 'var(--line)'),
-              background: filter === k ? a.bg12 : 'var(--surface)',
-              color: filter === k ? a.color : 'var(--muted)', fontSize: 12.5, fontWeight: 600,
-            }}>{lbl}</button>
-          ))}
-        </div>
-      )}
+      {bar}
       <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: 10, marginBottom: 24, marginTop: 8 }}>
         {podium.map((p) => (
           <PodiumCard key={p.name} player={p} rank={p === top3[0] ? 1 : p === top3[1] ? 2 : 3} a={a} onClick={onPick && ((e) => onPick(e, p.name, p.display))} />
@@ -196,7 +193,7 @@ function PlayersBoard({ a, mode, comp, members }) {
           onNo={() => setReveal(null)} />
       )}
       {viewing && (
-        <BetModal name={viewing.name} display={viewing.display} comp={comp} jornadaStr={last.jornadaStr} a={a}
+        <BetModal name={viewing.name} display={viewing.display} comp={comp} jornadaStr={jornada.jornadaStr} a={a}
           onClose={() => setViewing(null)} />
       )}
     </>
@@ -333,128 +330,3 @@ function PodiumCard({ player, rank, a, onClick }) {
   );
 }
 
-function LeagueTable({ comp }) {
-  const blue = comp === 'CL';
-  const [rows, setRows] = useState(null);
-  // En Champions: si ya terminó la fase liga, se muestra el cuadro de eliminatorias
-  const [phaseOver, setPhaseOver] = useState(blue ? null : false);
-  useEffect(() => {
-    if (blue) isClLeaguePhaseOver().then(setPhaseOver).catch(() => setPhaseOver(false));
-    else setPhaseOver(false);
-    getLeagueStandings(comp).then(setRows).catch(console.error);
-  }, [comp]);
-
-  if (blue && phaseOver === null) return <Loading />;
-  if (blue && phaseOver) return <Bracket />;
-  if (!rows) return <Loading />;
-  if (!rows.length) return <p style={{ color: 'var(--muted)', textAlign: 'center', padding: 30 }}>Sin clasificación disponible.</p>;
-
-  const zone = (i) => {
-    if (blue) {
-      if (i < 8) return 'var(--green)';     // 1-8: octavos directo
-      if (i < 24) return '#F4A261';         // 9-24: play-off (un partido más)
-      return 'var(--red)';                  // 25-36: eliminados
-    }
-    if (i < 4) return 'var(--green)';
-    if (i === 4) return 'var(--blue)';
-    if (i === 5) return '#9C7BFF';
-    if (i >= rows.length - 3) return 'var(--red)';
-    return 'transparent';
-  };
-
-  return (
-    <div>
-      <div style={{ display: 'grid', gridTemplateColumns: '26px 1fr 30px 36px 36px', gap: 8, padding: '0 12px 8px' }}>
-        <span style={{ fontSize: 10.5, color: 'var(--muted-2)', textTransform: 'uppercase' }}>#</span>
-        <span style={{ fontSize: 10.5, color: 'var(--muted-2)', textTransform: 'uppercase' }}>Equipo</span>
-        <span style={{ fontSize: 10.5, color: 'var(--muted-2)', textAlign: 'center' }}>PJ</span>
-        <span style={{ fontSize: 10.5, color: 'var(--muted-2)', textAlign: 'center' }}>DG</span>
-        <span style={{ fontSize: 10.5, color: 'var(--muted-2)', textAlign: 'center' }}>PTS</span>
-      </div>
-      <div className="kb-card" style={{ padding: '4px 0', overflow: 'hidden' }}>
-        {rows.map((row, i) => (
-          <div key={row.id + '-' + i} style={{ display: 'grid', gridTemplateColumns: '26px 1fr 30px 36px 36px', gap: 8, alignItems: 'center', padding: '9px 12px', borderBottom: i < rows.length - 1 ? '1px solid var(--line)' : 'none', position: 'relative' }}>
-            <span style={{ position: 'absolute', left: 0, top: 8, bottom: 8, width: 3, borderRadius: 2, background: zone(i) }} />
-            <span className="kb-num" style={{ textAlign: 'center', fontSize: 14, color: 'var(--muted)' }}>{i + 1}</span>
-            <div className="kb-row" style={{ gap: 9, minWidth: 0 }}>
-              <CompBadge comp={comp} id={row.id} name={row.name} size={26} />
-              <span style={{ fontSize: 13.5, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{teamLabel(comp, row.id, row.name)}</span>
-            </div>
-            <span className="kb-num" style={{ textAlign: 'center', fontSize: 13, color: 'var(--muted)' }}>{row.pj}</span>
-            <span className="kb-num" style={{ textAlign: 'center', fontSize: 13, color: row.dg > 0 ? 'var(--green)' : row.dg < 0 ? 'var(--red)' : 'var(--muted)' }}>{row.dg > 0 ? '+' : ''}{row.dg}</span>
-            <span className="kb-num" style={{ textAlign: 'center', fontSize: 16, fontWeight: 800, color: 'var(--text)' }}>{row.pts}</span>
-          </div>
-        ))}
-      </div>
-      {!blue ? (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 16px', marginTop: 14, padding: '0 4px' }}>
-          {[['var(--green)', 'Champions'], ['var(--blue)', 'Europa League'], ['#9C7BFF', 'Conference'], ['var(--red)', 'Descenso']].map(([c, l]) => (
-            <span key={l} className="kb-row" style={{ gap: 6, fontSize: 11, color: 'var(--muted)' }}>
-              <span style={{ width: 9, height: 9, borderRadius: 3, background: c }} /> {l}
-            </span>
-          ))}
-        </div>
-      ) : (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 16px', marginTop: 14, padding: '0 4px' }}>
-          {[['var(--green)', 'Octavos directo (1-8)'], ['#F4A261', 'Play-off · un partido más (9-24)'], ['var(--red)', 'Eliminados']].map(([c, l]) => (
-            <span key={l} className="kb-row" style={{ gap: 6, fontSize: 11, color: 'var(--muted)' }}>
-              <span style={{ width: 9, height: 9, borderRadius: 3, background: c }} /> {l}
-            </span>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* ---------------- Cuadro de eliminatorias (Champions) ---------------- */
-const KO_ROUNDS = [
-  ['Playoff', 'Play-off'],
-  ['Octavos', 'Octavos de final'],
-  ['Cuartos', 'Cuartos de final'],
-  ['Semifinales', 'Semifinales'],
-  ['Final', 'Final'],
-];
-
-function BracketMatch({ m }) {
-  return (
-    <div className="kb-card" style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', alignItems: 'center', gap: 8, padding: '10px 12px', marginBottom: 8 }}>
-      <div className="kb-row" style={{ gap: 8, minWidth: 0, justifyContent: 'flex-end' }}>
-        <span style={{ fontSize: 12.5, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textAlign: 'right' }}>{teamLabel('CL', m.id_local, m.equipo_local)}</span>
-        <CompBadge comp="CL" id={m.id_local} name={m.equipo_local} size={24} />
-      </div>
-      <div style={{ minWidth: 52, textAlign: 'center' }}>
-        {m.jugado
-          ? <span className="kb-num" style={{ fontSize: 15, fontWeight: 800, color: 'var(--text)' }}>{m.marcador || '—'}</span>
-          : <span style={{ fontSize: 10.5, color: 'var(--muted)', lineHeight: 1.25, display: 'block' }}>{fmtFecha(m.fecha, m.hora)}<br />{fmtHora(m.hora, m.fecha)}</span>}
-      </div>
-      <div className="kb-row" style={{ gap: 8, minWidth: 0 }}>
-        <CompBadge comp="CL" id={m.id_visitante} name={m.equipo_visitante} size={24} />
-        <span style={{ fontSize: 12.5, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{teamLabel('CL', m.id_visitante, m.equipo_visitante)}</span>
-      </div>
-    </div>
-  );
-}
-
-function Bracket() {
-  const [matches, setMatches] = useState(null);
-  useEffect(() => { getClBracket().then(setMatches).catch(console.error); }, []);
-  if (!matches) return <Loading />;
-  if (!matches.length) return <p style={{ color: 'var(--muted)', textAlign: 'center', padding: 30 }}>El cuadro aún no está disponible.</p>;
-  const byRound = {};
-  matches.forEach((m) => { (byRound[m.jornada] ||= []).push(m); });
-  return (
-    <div>
-      {KO_ROUNDS.filter(([k]) => byRound[k]).map(([k, lbl]) => (
-        <div key={k} style={{ marginBottom: 18 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '4px 0 10px' }}>
-            <h2 style={{ fontFamily: 'var(--font-cond)', fontWeight: 800, fontSize: 14, textTransform: 'uppercase', letterSpacing: 0.5, color: 'var(--blue)', margin: 0 }}>{lbl}</h2>
-            <span style={{ flex: 1, height: 1, background: 'var(--line)' }} />
-            <span style={{ fontSize: 11, color: 'var(--muted)' }}>{byRound[k].length} {byRound[k].length === 1 ? 'partido' : 'partidos'}</span>
-          </div>
-          {byRound[k].map((m) => <BracketMatch key={m.id_partido} m={m} />)}
-        </div>
-      ))}
-    </div>
-  );
-}

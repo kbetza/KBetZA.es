@@ -190,6 +190,48 @@ export async function getGroupStandings(group) {
   return general.filter((p) => set.has(p.name));
 }
 
+/* Todas las jornadas EN JUEGO o TERMINADAS, de la más reciente a la más antigua.
+   `points_by_matchday` ya filtra por app_now (solo partidos con el saque inicial dado),
+   así que la sola presencia de una jornada significa que está en juego o jugada.
+   El orden es CRONOLÓGICO, y con el mismo criterio que `last_scored_jornada`: el
+   último saque inicial YA DADO de cada jornada. Mirar todos los partidos daría un
+   orden falso — LaLiga aplaza partidos, y la J1 puede tener uno pendiente semanas
+   después de que la J2 ya se esté jugando. Además vale para eliminatorias sin
+   número: Playoff, Octavos... Final.
+   `nowMs` es el reloj de la app (useClock), que puede ir en fecha simulada. */
+export async function getPlayerStandingsJornadas(comp = 'PD', nowMs = Date.now()) {
+  const [pbm, cal] = await Promise.all([
+    supabase.from('points_by_matchday').select('*').eq('competition', comp),
+    supabase.from('all_matches').select('jornada,fecha,hora').eq('competition', comp),
+  ]);
+  if (pbm.error) throw pbm.error;
+  if (cal.error) throw cal.error;
+
+  const lastKickoff = {};
+  (cal.data || []).forEach((m) => {
+    const t = Date.parse(`${m.fecha}T${m.hora || '00:00:00'}Z`);
+    if (isNaN(t) || t > nowMs) return;
+    lastKickoff[m.jornada] = Math.max(lastKickoff[m.jornada] ?? -Infinity, t);
+  });
+
+  const byJornada = {};
+  (pbm.data || []).forEach((r) => {
+    (byJornada[r.jornada] ||= []).push({
+      name: r.username, display: r.display_name || r.username,
+      points: Number(r.puntos) || 0, hits: r.aciertos || 0, bets: 1,
+    });
+  });
+
+  return Object.entries(byJornada)
+    .map(([jornadaStr, rows]) => ({
+      jornada: jornadaNum(jornadaStr), jornadaStr, label: roundName(jornadaStr),
+      rows: rows.sort((a, b) => b.points - a.points),
+      // Sin fecha en all_matches (competición aún sin calendario) se cae al número.
+      order: lastKickoff[jornadaStr] ?? (jornadaNum(jornadaStr) || 0),
+    }))
+    .sort((a, b) => b.order - a.order);
+}
+
 export async function getPlayerStandingsLast(comp = 'PD') {
   const [pbm, lastJor] = await Promise.all([
     supabase.from('points_by_matchday').select('*').eq('competition', comp),
